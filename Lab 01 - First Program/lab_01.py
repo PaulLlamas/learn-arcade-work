@@ -1,0 +1,9 @@
+print("The children said \"Hello\" to the teacher at the beginning of class.")
+print("""The teacher said to the slow kid \"Please...
+be...
+on...
+time!\"
+He was so slow that he didn't understand.
+""")
+print("Is mouse an animal or a computer component?")
+print("A keyboard without keys is just a board?")
