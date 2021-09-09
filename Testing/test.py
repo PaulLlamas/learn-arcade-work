@@ -1,5 +1,1 @@
-print("""No
-way
-this
-works
-""")
+print(" As the saying says \"fuck it\"")
