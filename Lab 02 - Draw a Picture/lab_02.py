@@ -1,31 +1,29 @@
 import arcade
 
-# It opens a window.
-arcade.open_window(600, 600, "Drawing Example")
+# Opens window.
+arcade.open_window(800, 800, "Lab 2 Drawing")
 
-# Sets a background color.
-arcade.set_background_color(arcade.csscolor.DEEP_SKY_BLUE)
+# Set the background and color.
+arcade.set_background_color(arcade.csscolor.BLACK)
 
 # Get ready to draw.
 arcade.start_render()
 
 # Code will go here.
-#Grass
-arcade.draw_lrtb_rectangle_filled(0, 600, 350, 0, arcade.csscolor.GREENYELLOW)
+# Circumference of the Yin-Yang
+arcade.draw_circle_outline(400, 400, 300, arcade.csscolor.SNOW, 5)
 
-#First Tree
-arcade.draw_lrtb_rectangle_filled(90, 110, 350, 280, arcade.csscolor.BROWN)
-arcade.draw_circle_filled(100, 350, 30, arcade.csscolor.DARK_GREEN)
+# Yang division and coloring.
+arcade.draw_parabola_filled(400, 20, 700, 380, arcade.csscolor.SNOW)
+arcade.draw_parabola_filled(400, 20, 700, 380, arcade.csscolor.SNOW, 180)
+arcade.draw_ellipse_filled(575, 300, 200, 300, arcade.csscolor.SNOW, 30)
 
-#
-arcade.draw_lrtb_rectangle_filled(200, 220, 350, 280, arcade.csscolor.SIENNA)
-arcade.draw_circle_filled(210, 350, 30, arcade.csscolor.DARK_GREEN)
-
-arcade.draw_lrtb_rectangle_filled(300, 320, 350, 280, arcade.csscolor.SIENNA)
-arcade.draw_ellipse_filled(310, 360, 75, 60, arcade.csscolor.DARK_GREEN)
+# Second part of the division arc, aka negative parabola
+arcade.draw_parabola_outline(100, 20, 400, 380, arcade.csscolor.SNOW, 10, 180)
 
 
 # Finish drawing.
 arcade.finish_render()
 
+# Keeps the program running.
 arcade.run()
