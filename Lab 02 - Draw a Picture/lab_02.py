@@ -27,4 +27,3 @@ arcade.finish_render()
 
 # Keeps the program running.
 arcade.run()
-
