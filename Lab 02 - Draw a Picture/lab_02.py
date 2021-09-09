@@ -21,6 +21,7 @@ arcade.draw_ellipse_filled(575, 300, 200, 300, arcade.csscolor.SNOW, 30)
 # Second part of the division arc, aka negative parabola
 arcade.draw_parabola_outline(100, 20, 400, 380, arcade.csscolor.SNOW, 10, 180)
 
+
 # Finish drawing.
 arcade.finish_render()
 
