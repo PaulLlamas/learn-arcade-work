@@ -22,7 +22,7 @@ def draw_boards():
 
 def draw_chair(x, y):
     arcade.draw_triangle_filled(x, y - 100, x - 25, y - 135, x + 25, y - 135, arcade.csscolor.BLACK)
-    arcade.draw_rectangle_filled(x, y - 50, 110, 130, arcade.csscolor.ALICE_BLUE)
+    arcade.draw_rectangle_filled(x, y - 50, 110, 130, arcade.csscolor.CORNSILK)
     arcade.draw_circle_filled(x - 25, y - 135, 10, arcade.csscolor.GAINSBORO)
     arcade.draw_circle_filled(x + 25, y - 135, 10, arcade.csscolor.GAINSBORO)
 
