@@ -3,29 +3,33 @@ import arcade
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1200
 
+
 def draw_computer(x, y):
     arcade.draw_triangle_filled(x - 10, y - 65, x, y - 30, x + 10, y - 65, arcade.csscolor.BLACK)
     arcade.draw_rectangle_outline(x, y, 120, 80, arcade.csscolor.SILVER, 10)
     arcade.draw_rectangle_filled(x, y, 110, 70, arcade.csscolor.WHITE_SMOKE)
+
 
 def draw_table(x, y, z):
     arcade.draw_rectangle_filled(x, y, 300, 10, arcade.csscolor.PERU)
     arcade.draw_rectangle_filled(x - 135,y - 50, 20, 100, arcade.csscolor.PERU, z)
     arcade.draw_rectangle_filled(x + 135, y - 50, 20, 100, arcade.csscolor.PERU, z)
 
+
 def draw_floor():
     arcade.draw_rectangle_filled(600, 400, SCREEN_WIDTH, 800, arcade.csscolor.DARK_GRAY)
+
 
 def draw_boards():
     arcade.draw_rectangle_filled(325, 1000, 550, 200, arcade.csscolor.WHITE)
     arcade.draw_rectangle_filled(885, 1000, 550, 200, arcade.csscolor.WHITE)
+
 
 def draw_chair(x, y):
     arcade.draw_triangle_filled(x, y - 100, x - 25, y - 135, x + 25, y - 135, arcade.csscolor.BLACK)
     arcade.draw_rectangle_filled(x, y - 50, 110, 130, arcade.csscolor.CORNSILK)
     arcade.draw_circle_filled(x - 25, y - 135, 10, arcade.csscolor.GAINSBORO)
     arcade.draw_circle_filled(x + 25, y - 135, 10, arcade.csscolor.GAINSBORO)
-
 
 
 def main():
