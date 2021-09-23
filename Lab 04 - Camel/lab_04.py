@@ -1,13 +1,11 @@
 import random
 
+
 def main_instruction():
     print("Welcome to Seed of Life!")
     print("You have stolen the seed of the Tree if Life to sell it for money.")
     print("The elves want their sacred seed back and are chasing you!")
     print("Survive across the Magic Forest and escape from the elves.")
-
-
-
 
 
 def main():
@@ -19,10 +17,10 @@ def main():
     stamina = 100
     reg_potions = 2
     stamina_potions = 2
-    distance_elves = 70
+    distance_elves = -30
     dark_elves = random.randrange(10, 200)
-    distance_traveled = 100
-    out_forest = 300
+    distance_traveled = 0
+    out_forest = 400
 
     while not done:
         print("R. Use a regenerative potion.")
@@ -42,7 +40,7 @@ def main():
 
         # Uses stamina potion
         if user_choice.lower() == "e":
-            stamina = 100
+            stamina = 80
             stamina_potions -= 1
             print("You feel refreshed!")
 
@@ -54,11 +52,30 @@ def main():
             distance_elves += elves_travel
             print("You have traveled", fast_travel, "miles.")
             arrow_hit = random.randrange(1, 6)
-            health_arrow_hit = random.randrange(5, 25)
+            damage_arrow_hit = random.randrange(10, 50)
+            fall = random.randrange(1, 10)
+            fall_damage = random.randrange(10, 25)
             stamina_lost = random.randrange(15, 40)
             stamina -= stamina_lost
+            reg_potions_prob = random.randrange(1, 40)
+            stamina_potions_prob = random.randrange(1, 40)
+            reg_potion_bag = random.randrange(1, 2)
+            stamina_potion_bag = random.randrange(1, 2)
+
+            if reg_potions_prob == 5:
+                reg_potions += reg_potion_bag
+                print("You found a bag of a dead adventure and you found", reg_potion_bag, "potions in it!")
+
+            if stamina_potions_prob == 30:
+                stamina_potions += stamina_potion_bag
+                print("You found a bag of a dead adventure and you found", stamina_potion_bag, "potions in it!")
+
+            if fall == 3:
+                health -= fall_damage
+                print("You was so distracted that you fell and now you have", health, "health remaining!")
+
             if arrow_hit == 1:
-                health -= health_arrow_hit
+                health -= damage_arrow_hit
                 print("They are too good! They hit you with an arrow and now you have", health, "health remaining!")
 
             if distance_traveled == dark_elves:
@@ -77,8 +94,22 @@ def main():
             stamina -= stamina_lost
             arrow_hit = random.randrange(1, 6)
             health_arrow_hit = random.randrange(5, 25)
+            reg_potions_prob = random.randrange(1, 40)
+            stamina_potions_prob = random.randrange(1, 40)
+            reg_potion_bag = random.randrange(1, 2)
+            stamina_potion_bag = random.randrange(1, 2)
+
             if arrow_hit == 1:
                 health -= health_arrow_hit
+
+            if reg_potions_prob == 5:
+                reg_potions += reg_potion_bag
+                print("You found a bag of a dead adventure and you found", reg_potion_bag, "potions in it!")
+
+            if stamina_potions_prob == 30:
+                stamina_potions += stamina_potion_bag
+                print("You found a bag of a dead adventure and you found", stamina_potion_bag, "potions in it!")
+
             if distance_traveled == dark_elves:
                 print("You have encountered the dark elves!They fought against the elves and everyone died.")
                 print("You won!")
@@ -89,29 +120,38 @@ def main():
             stamina = 100
             elves_travel = random.randrange(5, 20)
             distance_elves += elves_travel
-            print("You feel refresh and ready for another ardous day!")
+            print("You feel refresh and ready for another arduous day!")
 
         # Player checks his status
         if user_choice.lower() == "s":
             print("Your health is", health)
             print("Your stamina is", stamina)
-            print("You have", reg_potions, "regenerative potions remaing.")
-            print("You have", stamina_potions, "stamina potions remaing.")
-            print("The elves are",distance_traveled-distance_elves, "miles away.")
-            print("You have traveled", distance_traveled, "miles so far. You still need to travel", out_forest-distance_traveled, "miles to win!")
+            print("You have", reg_potions, "regenerative potions remaining.")
+            print("You have", stamina_potions, "stamina potions remaining.")
+            print("The elves are", distance_traveled-distance_elves, "miles away.")
+            print("You have traveled", distance_traveled, "miles so far. You still need to travel",
+                  out_forest - distance_traveled, "miles to win!")
 
         if distance_elves >= distance_traveled:
             print("The elves caught you!")
-            print("You lose")
+            print("You lose!")
             done = True
 
         if health <= 0:
+            print("An arrow took your last breath.")
             print("You died!")
             done = True
 
         if distance_traveled >= out_forest:
             print("You got out of the forest!")
             print("You win!")
+            done = True
+
+        if stamina <= 40:
+            print("You are feeling tired.")
+        elif stamina <= 0:
+            print("You collapsed from tiredness and the elves caught you!")
+            print("You lose!")
             done = True
 
         # Quitting the game
