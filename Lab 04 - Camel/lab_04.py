@@ -24,11 +24,11 @@ def main():
     out_forest = 450
 
     while not done:
-        print("R. Use a regenerative potion.")
-        print("E. Use a energy potion.")
-        print("A. Run as fast as you can.")
-        print("D. Run carefully.")
-        print("T. Sleep in a tree for the night.")
+        print("R. Use a regenerative potion. (Refill health)")
+        print("E. Use a energy potion. (Refill stamina to 80%)")
+        print("A. Run as fast as you can. (15-40 stamina)")
+        print("D. Run carefully. (10-25 stamina)")
+        print("T. Sleep in a tree for the night. (Refill stamina)")
         print("S. Status check")
         print("Q. Quit.")
         user_choice = input("What do you chose? ")
