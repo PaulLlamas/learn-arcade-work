@@ -159,6 +159,8 @@ def main():
             break
         if 40 >= stamina > 0:
             print("You are feeling tired.")
+        if distance_elves >= distance_traveled - 40:
+            print("The elves are close! Choose carefully!")
 
 
 main()
