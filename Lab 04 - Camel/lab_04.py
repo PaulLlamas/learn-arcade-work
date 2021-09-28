@@ -45,15 +45,21 @@ def main():
 
         # Uses regenerative potion
         if user_choice.lower() == "r":
-            health = 100
-            reg_potions -= 1
-            print("You feel full of vitality!")
+            if reg_potions == 0:
+                print("You have no regenerative potions left!")
+            elif reg_potions >= 1:
+                health = 100
+                reg_potions -= 1
+                print("You feel full of vitality!")
 
         # Uses stamina potion
         if user_choice.lower() == "e":
-            stamina = 80
-            stamina_potions -= 1
-            print("You feel refreshed!")
+            if stamina_potions == 0:
+                print("You have no stamina potions left!")
+            elif stamina_potions >= 1:
+                stamina = 80
+                stamina_potions -= 1
+                print("You feel refreshed!")
 
         # Fast run
         if user_choice.lower() == "a":
