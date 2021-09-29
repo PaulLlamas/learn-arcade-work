@@ -79,6 +79,14 @@ def main():
             reg_potion_bag = random.randrange(1, 2)
             stamina_potion_bag = random.randrange(1, 2)
 
+            if arrow_hit == 1:
+                health -= damage_arrow_hit
+                print("They are too good! They hit you with an arrow and now you have", health, "health remaining!")
+            elif health <= 0:
+                print("An arrow took your last breath.")
+                print("You died!")
+                break
+
             if reg_potions_prob == 5:
                 reg_potions += reg_potion_bag
                 print("You found a bag of a dead adventure and you found", reg_potion_bag,
@@ -96,13 +104,6 @@ def main():
                 print("You died!")
                 break
 
-            if arrow_hit == 1:
-                health -= damage_arrow_hit
-                print("They are too good! They hit you with an arrow and now you have", health, "health remaining!")
-            elif health <= 0:
-                print("An arrow took your last breath.")
-                print("You died!")
-                break
 
         # Slow run
         if user_choice.lower() == "d":
@@ -143,7 +144,7 @@ def main():
             distance_elves += elves_travel
             print("You feel refresh and ready for another arduous day!")
 
-        # Quitting the game
+        # Quitting/Winning/Losing the game
         if user_choice.lower() == "q":
             print("Thank you for playing Seed of Life")
             break
