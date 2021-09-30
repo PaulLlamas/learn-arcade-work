@@ -19,7 +19,7 @@ def main():
     reg_potions = 2
     stamina_potions = 2
     distance_elves = 0
-    dark_elves = random.randrange(80, 400)
+
     distance_traveled = 30
     out_forest = 450
 
@@ -82,10 +82,10 @@ def main():
             if arrow_hit == 1:
                 health -= damage_arrow_hit
                 print("They are too good! They hit you with an arrow and now you have", health, "health remaining!")
-            elif health <= 0:
-                print("An arrow took your last breath.")
-                print("You died!")
-                break
+                if health <= 0:
+                    print("An arrow took your last breath.")
+                    print("You died!")
+                    break
 
             if reg_potions_prob == 5:
                 reg_potions += reg_potion_bag
@@ -99,11 +99,10 @@ def main():
             if fall == 3:
                 health -= fall_damage
                 print("You was so distracted that you fell and now you have", health, "health remaining!")
-            elif health <= 0:
-                print("Your carelessness made you fall to death.")
-                print("You died!")
-                break
-
+                if health <= 0:
+                    print("Your carelessness made you fall to death.")
+                    print("You died!")
+                    break
 
         # Slow run
         if user_choice.lower() == "d":
@@ -123,10 +122,10 @@ def main():
 
             if arrow_hit == 1:
                 health -= health_arrow_hit
-            elif health <= 0:
-                print("An arrow took your last breath.")
-                print("You died!")
-                break
+                if health <= 0:
+                    print("An arrow took your last breath.")
+                    print("You died!")
+                    break
 
             if reg_potions_prob == 5:
                 reg_potions += reg_potion_bag
@@ -152,10 +151,13 @@ def main():
             print("You got out of the forest!")
             print("You win!")
             break
+            # Dark Elves randomly appear in the route, they will interact with us if we are in the same place.
+        dark_elves = random.randrange(80, 400)
         if distance_traveled == dark_elves:
             print("You have encountered the dark elves!They fought against the elves and everyone died.")
             print("You won!")
             break
+
         if distance_elves >= distance_traveled:
             print("The elves caught you!")
             print("You lose!")
