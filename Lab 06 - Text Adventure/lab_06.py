@@ -17,13 +17,13 @@ def main():
     current_room = 0
 
     room = Room("You have just entered a high school through the gate. There is a bench southwest.\n"
-                    "One door that says Business Office east. There is the second part of the hallway south.",
+                "One door that says Business Office east. There is the second part of the hallway south.",
                 None, 1, None, 14)
     room_list.append(room)
 
     room = Room("You just entered the Business Office. There are a couches south.\n"
                 "There is a hallway east. There is a door that says Only Personnel north.\n"
-                "There is a plant southeast", 2, 5, 0, None)
+                "There is a plant southeast.", 2, 5, 0, None)
     room_list.append(room)
 
     room = Room("You just entered the Only Personnel door. There is a desk with papers and a computer.\n"
@@ -32,18 +32,18 @@ def main():
     room_list.append(room)
 
     room = Room("You just entered the east door. There is a desk west. There are file cabinets east. There is a \n"
-                "painting south.", None, 2, None, None)
+                "painting south.", None, None, 2, None)
     room_list.append(room)
 
     room = Room("You just entered the Accountant door. There is a desk east. There is a painting behind\n"
                 "the desk. There is another painting north. There is a couple plants south.", None, None, None, 5)
     room_list.append(room)
 
-    room = Room("You walked to the hallway. There is a door west. There are two plants at both sides of\n"
-                "the door. There is door north that says Accountant.", 4, None, 1, 6)
+    room = Room("You walked to the hallway. There is a door south. There are two plants at both sides of\n"
+                "the door. There is door north that says Accountant. There is a hallway west.", 4, None, 1, 6)
     room_list.append(room)
 
-    room = Room("You enter the door south and now you are in another hallway! There is a door that says\n"
+    room = Room("You  are in another hallway! There is a door that says\n"
                 "Counselor east. There is another hallway south.", 5, 7, None, 9)
     room_list.append(room)
 
@@ -57,7 +57,7 @@ def main():
     room_list.append(room)
 
     room = Room("You went to the other hallway. There is a door east. There is the school canteen south. There is\n"
-                "furniture with trophies in the middle of the room. There is a door west. There is a door"
+                "furniture with trophies in the middle of the room. There is a door west. There is a door "
                 "north.", 12, 8, 14, 10)
     room_list.append(room)
 
@@ -71,17 +71,17 @@ def main():
     room_list.append(room)
 
     room = Room("You entered the north door. There is a desk east with paper and a telephone. There is a cabinet\n"
-                "northeast. There is are two file cabinets north. There is a door saying Principal north west",
+                "northeast. There is are two file cabinets north. There is a door saying Principal north west.",
                 13, None, None, 9)
     room_list.append(room)
 
     room = Room("You entered the Principal office. There is a desk east with a painting behind it. There are file\n"
-                "cabinets south. There are plants west of the room. There is a fridge and snacks north", None,
+                "cabinets south. There are plants west of the room. There is a fridge and snacks north.", None,
                 None, None, 12)
     room_list.append(room)
 
     room = Room("You entered an exterior hallway. There is a hallway north. There is a hallway south. There is a\n"
-                "bench west.", 0, 9, None, 15)
+                "bench west. There is a door east.", 0, 9, None, 15)
     room_list.append(room)
 
     room = Room("You entered the south side of the hallway. There is absolutely nothing here.",
