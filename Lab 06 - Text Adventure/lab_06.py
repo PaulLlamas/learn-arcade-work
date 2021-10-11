@@ -44,7 +44,7 @@ def main():
     room_list.append(room)
 
     room = Room("You  are in another hallway! There is a door that says\n"
-                "Counselor east. There is another hallway south.", 5, 7, None, 9)
+                "Counselor east. There is a one way hallway south.", 5, 7, None, 9)
     room_list.append(room)
 
     room = Room("You enter the door that said Counselor. There is desk south. There is a library with a\n"
@@ -71,7 +71,7 @@ def main():
     room_list.append(room)
 
     room = Room("You entered the north door. There is a desk east with paper and a telephone. There is a cabinet\n"
-                "northeast. There is are two file cabinets north. There is a door saying Principal north west.",
+                "northeast. There is are two file cabinets northwest. There is a door saying Principal north.",
                 13, None, None, 9)
     room_list.append(room)
 
