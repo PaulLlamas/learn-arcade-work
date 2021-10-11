@@ -93,6 +93,11 @@ def main():
         print()
         print(room_list[current_room].description)
         user_input = input(str("What do you want to do? "))
+
+        if user_input.lower() == "quit" or user_input.lower() == "q":
+            print("Thanks for losing you time here!")
+            break
+
         if user_input.lower() == "north" or user_input.lower() == "n":
             next_room = room_list[current_room].north
             if next_room == None:
@@ -123,9 +128,6 @@ def main():
 
         else:
             print("What do you mean?")
-
-        if user_input.lower() == "quit" or user_input.lower() == "q":
-            break
 
 
 main()
