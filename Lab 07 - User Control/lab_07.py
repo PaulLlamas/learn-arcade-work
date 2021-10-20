@@ -18,6 +18,7 @@ class Strange:
         self.change_y = change_y
         self.radius = radius
         self.color = color
+        self.explosion_sound = arcade.load_sound(":resources:sounds/explosion2.wav")
 
     def strange_circle_draw(self):
         arcade.draw_circle_outline(self.position_x - 35, self.position_y - 5, self.radius, self.color, 5)
@@ -42,16 +43,20 @@ class Strange:
         self.position_x += self.change_x
 
         if self.position_x < self.radius:
-            self.change_x *= -1
+            self.change_x = self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_x > SCREEN_WIDTH - self.radius:
-            self.change_x *= -1
+            self.change_x = SCREEN_WIDTH - self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_y < self.radius:
-            self.change_y *= -1
+            self.change_y = self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
-            self.change_y *= -1
+            self.change_y = SCREEN_HEIGHT - self.radius
+            arcade.play_sound(self.explosion_sound)
 
 
 class Part2:
@@ -62,6 +67,7 @@ class Part2:
         self.change_y = change_y
         self.radius = radius
         self.color = color
+        self.explosion_sound = arcade.load_sound(":resources:sounds/explosion2.wav")
 
     def part2_draw(self):
         arcade.draw_circle_outline(self.position_x, self.position_y - 5, self.radius, self.color, 5)
@@ -86,16 +92,20 @@ class Part2:
         self.position_x += self.change_x
 
         if self.position_x < self.radius:
-            self.change_x *= -1
+            self.change_x = self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_x > SCREEN_WIDTH - self.radius:
-            self.change_x *= -1
+            self.change_x = SCREEN_WIDTH - self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_y < self.radius:
-            self.change_y *= -1
+            self.change_y = self.radius
+            arcade.play_sound(self.explosion_sound)
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
-            self.change_y *= -1
+            self.change_y = SCREEN_HEIGHT - self.radius
+            arcade.play_sound(self.explosion_sound)
 
 
 class MyGame(arcade.Window):
@@ -164,6 +174,3 @@ class MyGame(arcade.Window):
 def main():
     window = MyGame()
     arcade.run()
-
-
-main()

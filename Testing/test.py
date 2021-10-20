@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import arcade
 import random
 
@@ -61,3 +62,6 @@ def main():
     arcade.run()
 
 main()
+=======
+in range()
+>>>>>>> 383bbb88e9198187a4404a87a747690be3e54749
