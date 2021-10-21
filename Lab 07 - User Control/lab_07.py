@@ -43,19 +43,19 @@ class Strange:
         self.position_x += self.change_x
 
         if self.position_x < self.radius:
-            self.change_x = self.radius
+            self.position_x = self.radius
             arcade.play_sound(self.explosion_sound)
 
         if self.position_x > SCREEN_WIDTH - self.radius:
-            self.change_x = SCREEN_WIDTH - self.radius
+            self.position_x = SCREEN_WIDTH - self.radius
             arcade.play_sound(self.explosion_sound)
 
         if self.position_y < self.radius:
-            self.change_y = self.radius
+            self.position_y = self.radius
             arcade.play_sound(self.explosion_sound)
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
-            self.change_y = SCREEN_HEIGHT - self.radius
+            self.position_y = SCREEN_HEIGHT - self.radius
             arcade.play_sound(self.explosion_sound)
 
 
@@ -92,19 +92,20 @@ class Part2:
         self.position_x += self.change_x
 
         if self.position_x < self.radius:
-            self.change_x = self.radius
+            self.position_x = self.radius
             arcade.play_sound(self.explosion_sound)
 
+
         if self.position_x > SCREEN_WIDTH - self.radius:
-            self.change_x = SCREEN_WIDTH - self.radius
+            self.position_x = SCREEN_WIDTH - self.radius
             arcade.play_sound(self.explosion_sound)
 
         if self.position_y < self.radius:
-            self.change_y = self.radius
+            self.position_y = self.radius
             arcade.play_sound(self.explosion_sound)
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
-            self.change_y = SCREEN_HEIGHT - self.radius
+            self.position_y = SCREEN_HEIGHT - self.radius
             arcade.play_sound(self.explosion_sound)
 
 
@@ -117,9 +118,11 @@ class MyGame(arcade.Window):
 
         self.set_mouse_visible(False)
 
-        # Create our ball
+        # Create our thing
         self.circle = Strange(60, 50, 0, 0, 50, arcade.color.BLUSH)
         self.linear_circle = Part2(60, 50, 0, 0, 50, arcade.color.SILVER)
+        self.hurt_sound = arcade.load_sound(":resources:sounds/hurt2.wav")
+        self.upgrade_sound = arcade.load_sound(":resources:sounds/upgrade5.wav")
 
     def on_draw(self):
         arcade.start_render()
@@ -145,9 +148,9 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
 
         if button == arcade.MOUSE_BUTTON_LEFT:
-            print("Left mouse button pressed at", x, y)
+            arcade.play_sound(self.hurt_sound)
         elif button == arcade.MOUSE_BUTTON_RIGHT:
-            print("Right mouse button pressed at", x, y)
+            arcade.play_sound(self.upgrade_sound)
 
     def update(self, delta_time):
         self.circle.update()
@@ -174,3 +177,5 @@ class MyGame(arcade.Window):
 def main():
     window = MyGame()
     arcade.run()
+
+main()
