@@ -95,7 +95,6 @@ class Part2:
             self.position_x = self.radius
             arcade.play_sound(self.explosion_sound)
 
-
         if self.position_x > SCREEN_WIDTH - self.radius:
             self.position_x = SCREEN_WIDTH - self.radius
             arcade.play_sound(self.explosion_sound)
@@ -177,5 +176,6 @@ class MyGame(arcade.Window):
 def main():
     window = MyGame()
     arcade.run()
+
 
 main()
