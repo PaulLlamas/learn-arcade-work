@@ -5,15 +5,15 @@ import math
 # --- Constants ---
 SCREEN_WIDTH = 1500
 SCREEN_HEIGHT = 1000
-MOVEMENT_SPEED = 10
+MOVEMENT_SPEED = 5
 PLAYER_SCALE = 0.8
 SLIME_SCALE = 0.4
 SLIME_COUNT = 30
 FISH_SCALE = 0.4
 FISH_COUNT = 30
-BULLET_SPEED = 5
-LASER_SCALE = 5
-TARGET_SCALE = 2
+BULLET_SPEED = 20
+LASER_SCALE = 1
+TARGET_SCALE = 0.3
 
 
 class Slime(arcade.Sprite):
@@ -118,7 +118,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        self.target_sprite = arcade.Sprite("target.png", TARGET_SCALE)
+        self.target_sprite = arcade.Sprite("target-850-567378.png", TARGET_SCALE)
         self.target_sprite.center_x = 60
         self.target_sprite.center_y = 60
         self.target_list.append(self.target_sprite)
@@ -150,6 +150,7 @@ class MyGame(arcade.Window):
 
         arcade.start_render()
         self.player_list.draw()
+        self.target_list.draw()
         self.slime_list.draw()
         self.fish_list.draw()
         self.bullet_list.draw()
@@ -184,15 +185,11 @@ class MyGame(arcade.Window):
 
         self.bullet_list.append(bullet)
 
-        if button == arcade.MOUSE_BUTTON_LEFT:
-            arcade.play_sound(self.hurt_sound)
-        elif button == arcade.MOUSE_BUTTON_RIGHT:
-            arcade.play_sound(self.upgrade_sound)
-
     def update(self, delta_time):
         self.slime_list.update()
         self.fish_list.update()
         self.bullet_list.update()
+        self.player_sprite.update()
 
         good_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.slime_list)
         bad_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.fish_list)
@@ -212,10 +209,14 @@ class MyGame(arcade.Window):
 
             if len(good_hit_list) > 0:
                 bullet.remove_from_sprite_lists()
+            for slime in good_hit_list:
+                slime.remove_from_sprite_lists()
                 self.score += 1
 
             if len(bad_hit_list) > 0:
                 bullet.remove_from_sprite_lists()
+            for fish in bad_hit_list:
+                fish.remove_from_sprite_lists()
                 self.score -= 1
 
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
@@ -223,19 +224,19 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """ Called whenever the user presses a key. """
-        if key == arcade.key.LEFT:
+        if key == arcade.key.A:
             self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED
-        elif key == arcade.key.UP:
+        elif key == arcade.key.W:
             self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.S:
             self.player_sprite.change_y = -MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        if key == arcade.key.A or key == arcade.key.D:
             self.player_sprite.change_x = 0
-        elif key == arcade.key.UP or key == arcade.key.DOWN:
+        elif key == arcade.key.W or key == arcade.key.S:
             self.player_sprite.change_y = 0
 
 
