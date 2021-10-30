@@ -3,17 +3,17 @@ import random
 import math
 
 # --- Constants ---
-SCREEN_WIDTH = 1500
-SCREEN_HEIGHT = 1000
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 800
 MOVEMENT_SPEED = 5
-PLAYER_SCALE = 0.8
-SLIME_SCALE = 0.4
+PLAYER_SCALE = 0.7
+SLIME_SCALE = 0.35
 SLIME_COUNT = 30
-FISH_SCALE = 0.4
+FISH_SCALE = 0.35
 FISH_COUNT = 30
 BULLET_SPEED = 20
 LASER_SCALE = 1
-TARGET_SCALE = 0.3
+TARGET_SCALE = 0.15
 
 
 class Slime(arcade.Sprite):
@@ -94,8 +94,10 @@ class MyGame(arcade.Window):
 
         self.set_mouse_visible(False)
 
-        self.gun_sound = arcade.load_sound(":resources:sounds/laser1.wav")
-        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
+        self.gun_sound = arcade.load_sound(":resources:sounds/laser2.wav")
+        self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
+        self.bad_hit_sound = arcade.sound.load_sound(":resources:sounds/error5.wav")
+
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -156,7 +158,7 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
 
         output = f"score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.target_sprite.center_x = x
@@ -184,6 +186,8 @@ class MyGame(arcade.Window):
         bullet.change_y = math.sin(angle) * BULLET_SPEED
 
         self.bullet_list.append(bullet)
+        arcade.play_sound(self.gun_sound)
+
 
     def update(self, delta_time):
         self.slime_list.update()
@@ -197,10 +201,12 @@ class MyGame(arcade.Window):
         for slime in good_hit_list:
             slime.remove_from_sprite_lists()
             self.score += 1
+            arcade.play_sound(self.good_hit_sound)
 
         for fish in bad_hit_list:
             fish.remove_from_sprite_lists()
             self.score -= 1
+            arcade.play_sound(self.bad_hit_sound)
 
         for bullet in self.bullet_list:
 
@@ -212,18 +218,29 @@ class MyGame(arcade.Window):
             for slime in good_hit_list:
                 slime.remove_from_sprite_lists()
                 self.score += 1
+                arcade.play_sound(self.good_hit_sound)
 
             if len(bad_hit_list) > 0:
                 bullet.remove_from_sprite_lists()
             for fish in bad_hit_list:
                 fish.remove_from_sprite_lists()
                 self.score -= 1
+                arcade.play_sound(self.bad_hit_sound)
 
             if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
                 bullet.remove_from_sprite_lists()
 
+        if self.player_sprite.top > SCREEN_HEIGHT:
+            self.player_sprite.top = SCREEN_HEIGHT
+        if self.player_sprite.left < 0:
+            self.player_sprite.left = 0
+        if self.player_sprite.bottom < 0:
+            self.player_sprite.bottom = 0
+        if self.player_sprite.right > SCREEN_WIDTH:
+            self.player_sprite.right = SCREEN_WIDTH
+
     def on_key_press(self, key, modifiers):
-        """ Called whenever the user presses a key. """
+
         if key == arcade.key.A:
             self.player_sprite.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.D:
