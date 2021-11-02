@@ -75,9 +75,7 @@ class MyGame(arcade.Window):
     def __init__(self):
 
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 8 - Sprites")
-
-        self.set_mouse_visible(False)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 8")
 
         # Sprite lists
         self.player_list = None
@@ -92,14 +90,14 @@ class MyGame(arcade.Window):
 
         self.target_sprite = None
 
-        self.set_mouse_visible(False)
-
         self.gun_sound = arcade.load_sound(":resources:sounds/laser2.wav")
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
         self.bad_hit_sound = arcade.sound.load_sound(":resources:sounds/error5.wav")
 
-
+        self.time_taken = 0
         arcade.set_background_color(arcade.color.AMAZON)
+
+        self.set_mouse_visible(False)
 
     def setup(self):
 
@@ -114,7 +112,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up player
-        # Character image from fandom.com in Pokemon Spectrum Wikia
+        # Character image from fandom.com in Pokemon Spectrum Wiki
         self.player_sprite = arcade.Sprite("Komodon.png", PLAYER_SCALE)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
@@ -160,84 +158,95 @@ class MyGame(arcade.Window):
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
 
+        if len(self.slime_list) == 0:
+            arcade.draw_text("Game Over",
+                             SCREEN_WIDTH / 2,
+                             SCREEN_HEIGHT / 2,
+                             arcade.color.WHITE, 80,
+                             anchor_x="center")
+
     def on_mouse_motion(self, x, y, dx, dy):
-        self.target_sprite.center_x = x
-        self.target_sprite.center_y = y
+        if len(self.slime_list) != 0:
+            self.target_sprite.center_x = x
+            self.target_sprite.center_y = y
+        else:
+            self.set_mouse_visible(True)
 
     def on_mouse_press(self, x, y, button, modifiers):
+        if len(self.slime_list) != 0:
+            bullet = arcade.Sprite("laserBlue01.png", LASER_SCALE)
 
-        bullet = arcade.Sprite("laserBlue01.png", LASER_SCALE)
+            start_x = self.player_sprite.center_x
+            start_y = self.player_sprite.center_y + 30
+            bullet.center_x = start_x
+            bullet.center_y = start_y
 
-        start_x = self.player_sprite.center_x
-        start_y = self.player_sprite.center_y + 30
-        bullet.center_x = start_x
-        bullet.center_y = start_y
+            dest_x = x
+            dest_y = y
 
-        dest_x = x
-        dest_y = y
+            x_diff = dest_x - start_x
+            y_diff = dest_y - start_y
+            angle = math.atan2(y_diff, x_diff)
 
-        x_diff = dest_x - start_x
-        y_diff = dest_y - start_y
-        angle = math.atan2(y_diff, x_diff)
+            bullet.change_x = math.cos(angle) * BULLET_SPEED
+            bullet.change_y = math.sin(angle) * BULLET_SPEED
 
-        bullet_angle = math.degrees(angle)
-
-        bullet.change_x = math.cos(angle) * BULLET_SPEED
-        bullet.change_y = math.sin(angle) * BULLET_SPEED
-
-        self.bullet_list.append(bullet)
-        arcade.play_sound(self.gun_sound)
-
+            self.bullet_list.append(bullet)
+            arcade.play_sound(self.gun_sound)
 
     def update(self, delta_time):
-        self.slime_list.update()
-        self.fish_list.update()
-        self.bullet_list.update()
-        self.player_sprite.update()
+        if len(self.slime_list) != 0:
+            self.slime_list.update()
+            self.fish_list.update()
+            self.bullet_list.update()
+            self.player_sprite.update()
 
-        good_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.slime_list)
-        bad_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.fish_list)
+            good_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.slime_list)
+            bad_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.fish_list)
 
-        for slime in good_hit_list:
-            slime.remove_from_sprite_lists()
-            self.score += 1
-            arcade.play_sound(self.good_hit_sound)
-
-        for fish in bad_hit_list:
-            fish.remove_from_sprite_lists()
-            self.score -= 1
-            arcade.play_sound(self.bad_hit_sound)
-
-        for bullet in self.bullet_list:
-
-            good_hit_list = arcade.check_for_collision_with_list(bullet, self.slime_list)
-            bad_hit_list = arcade.check_for_collision_with_list(bullet, self.fish_list)
-
-            if len(good_hit_list) > 0:
-                bullet.remove_from_sprite_lists()
             for slime in good_hit_list:
                 slime.remove_from_sprite_lists()
                 self.score += 1
                 arcade.play_sound(self.good_hit_sound)
 
-            if len(bad_hit_list) > 0:
-                bullet.remove_from_sprite_lists()
             for fish in bad_hit_list:
                 fish.remove_from_sprite_lists()
                 self.score -= 1
                 arcade.play_sound(self.bad_hit_sound)
 
-            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
-                bullet.remove_from_sprite_lists()
+            for bullet in self.bullet_list:
 
-        if self.player_sprite.top > SCREEN_HEIGHT:
-            self.player_sprite.top = SCREEN_HEIGHT
-        if self.player_sprite.left < 0:
-            self.player_sprite.left = 0
-        if self.player_sprite.bottom < 0:
-            self.player_sprite.bottom = 0
-        if self.player_sprite.right > SCREEN_WIDTH:
-            self.player_sprite.right = SCREEN_WIDTH
+                good_hit_list = arcade.check_for_collision_with_list(bullet, self.slime_list)
+                bad_hit_list = arcade.check_for_collision_with_list(bullet, self.fish_list)
+
+                if len(good_hit_list) > 0:
+                    bullet.remove_from_sprite_lists()
+                for slime in good_hit_list:
+                    slime.remove_from_sprite_lists()
+                    self.score += 1
+                    arcade.play_sound(self.good_hit_sound)
+
+                if len(bad_hit_list) > 0:
+                    bullet.remove_from_sprite_lists()
+                for fish in bad_hit_list:
+                    fish.remove_from_sprite_lists()
+                    self.score -= 1
+                    arcade.play_sound(self.bad_hit_sound)
+
+                if bullet.bottom > self.width or\
+                        bullet.top < 0 or\
+                        bullet.right < 0 or\
+                        bullet.left > self.width:
+                    bullet.remove_from_sprite_lists()
+
+            if self.player_sprite.top > SCREEN_HEIGHT:
+                self.player_sprite.top = SCREEN_HEIGHT
+            if self.player_sprite.left < 0:
+                self.player_sprite.left = 0
+            if self.player_sprite.bottom < 0:
+                self.player_sprite.bottom = 0
+            if self.player_sprite.right > SCREEN_WIDTH:
+                self.player_sprite.right = SCREEN_WIDTH
 
     def on_key_press(self, key, modifiers):
 
