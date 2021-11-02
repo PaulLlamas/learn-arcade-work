@@ -118,6 +118,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
+        # Sprite from pngtree.com in Target.
         self.target_sprite = arcade.Sprite("target-850-567378.png", TARGET_SCALE)
         self.target_sprite.center_x = 60
         self.target_sprite.center_y = 60
@@ -125,7 +126,7 @@ class MyGame(arcade.Window):
 
         # Create the slimes
         for i in range(SLIME_COUNT):
-
+            # Sprite from arcade.academy.com in resources.
             slime = Slime(":resources:images/enemies/slimeBlue_move.png", SLIME_SCALE)
 
             slime.center_x = random.randrange(SCREEN_WIDTH)
@@ -136,7 +137,7 @@ class MyGame(arcade.Window):
             self.slime_list.append(slime)
 
         for i in range(FISH_COUNT):
-
+            # Sprite from arcade.academy.com in resources.
             fish = Fish(":resources:images/enemies/fishPink.png", FISH_SCALE)
 
             fish.center_x = random.randrange(SCREEN_WIDTH)
@@ -174,6 +175,7 @@ class MyGame(arcade.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if len(self.slime_list) != 0:
+            # Sprite from notes
             bullet = arcade.Sprite("laserBlue01.png", LASER_SCALE)
 
             start_x = self.player_sprite.center_x
