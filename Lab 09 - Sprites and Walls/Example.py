@@ -10,86 +10,15 @@ python -m arcade.examples.sprite_rooms
 import arcade
 import os
 
-SPRITE_SCALING = 0.2
-SPRITE_NATIVE_SIZE = 528
+SPRITE_SCALING = 0.5
+SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
 SCREEN_WIDTH = SPRITE_SIZE * 14
 SCREEN_HEIGHT = SPRITE_SIZE * 10
-SCREEN_TITLE = "Lab 9 Sprite and Walls"
+SCREEN_TITLE = "Sprite Rooms Example"
 
-# How fast to move, and how fast to run the animation
 MOVEMENT_SPEED = 5
-UPDATES_PER_FRAME = 16
-
-# Constants used to track if the player is facing left or right
-RIGHT_FACING = 0
-LEFT_FACING = 1
-
-CHARACTER_SCALING = 5
-
-
-def load_texture_pair(filename):
-    """
-    Load a texture pair, with the second being a mirror image.
-    """
-    return [
-        # Taken from artstation.com from Lukasz Piatkowski
-        arcade.load_texture("soldier.gif"),
-        arcade.load_texture("soldier_mirror.gif", flipped_horizontally=True)
-    ]
-
-
-class PlayerCharacter(arcade.Sprite):
-    def __init__(self):
-
-        # Set up parent class
-        super().__init__()
-
-        # Default to face-right
-        self.character_face_direction = RIGHT_FACING
-
-        # Used for flipping between image sequences
-        self.cur_texture = 0
-
-        self.scale = CHARACTER_SCALING
-
-        # Adjust the collision box. Default includes too much empty space
-        # side-to-side. Box is centered at sprite center, (0, 0)
-        self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
-
-        # --- Load Textures ---
-        main_path = "soldier.gif"
-
-        # Load textures for idle standing
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-
-        # Load textures for walking
-        self.walk_textures = []
-        for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
-
-    def update_animation(self, delta_time: float = 1 / 60):
-
-        # Figure out if we need to flip face left or right
-        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
-            self.character_face_direction = LEFT_FACING
-        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
-            self.character_face_direction = RIGHT_FACING
-
-        # Idle animation
-        if self.change_x == 0 and self.change_y == 0:
-            self.texture = self.idle_texture_pair[self.character_face_direction]
-            return
-
-        # Walking animation
-        self.cur_texture += 1
-        if self.cur_texture > 7 * UPDATES_PER_FRAME:
-            self.cur_texture = 0
-        frame = self.cur_texture // UPDATES_PER_FRAME
-        direction = self.character_face_direction
-        self.texture = self.walk_textures[frame][direction]
 
 
 class Room:
@@ -124,7 +53,7 @@ def setup_room_1():
     for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite("wall1.png",
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
                                  SPRITE_SCALING)
             wall.left = x
             wall.bottom = y
@@ -136,13 +65,13 @@ def setup_room_1():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up on the right side
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x == 0:
-                wall = arcade.Sprite("wall1.png",
+                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
                                      SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("boxCrate_double.png",
+    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
                          SPRITE_SCALING)
     wall.left = 7 * SPRITE_SIZE
     wall.bottom = 5 * SPRITE_SIZE
@@ -172,7 +101,7 @@ def setup_room_2():
     for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite("wall1.png", SPRITE_SCALING)
+            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
             wall.left = x
             wall.bottom = y
             room.wall_list.append(wall)
@@ -183,12 +112,12 @@ def setup_room_2():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
-                wall = arcade.Sprite("wall1.png", SPRITE_SCALING)
+                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING)
+    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", SPRITE_SCALING)
     wall.left = 5 * SPRITE_SIZE
     wall.bottom = 6 * SPRITE_SIZE
     room.wall_list.append(wall)
@@ -225,7 +154,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         # Set up the player
-        self.player_sprite = arcade.Sprite("soldier_idle.png", SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite("femalePerson_idle.png", SPRITE_SCALING)
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
         self.player_list = arcade.SpriteList()
@@ -272,21 +201,21 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.W:
+        if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.S:
+        elif key == arcade.key.DOWN:
             self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.A:
+        elif key == arcade.key.LEFT:
             self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.D:
+        elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.W or key == arcade.key.S:
+        if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
-        elif key == arcade.key.A or key == arcade.key.D:
+        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
@@ -295,7 +224,6 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
-        self.player_list.update_animation()
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.

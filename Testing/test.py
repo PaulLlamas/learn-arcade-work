@@ -27,6 +27,11 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
+        self.score = 0
+
+        self.camera_for_sprites = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera_for_gui = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+
 
     def setup(self):
         # Set the background color
@@ -72,27 +77,38 @@ class MyGame(arcade.Window):
     def update(self, delta_time: float):
         self.physics_engine.update()
 
+        CAMERA_SPEED = 0.5
+        lower_left_corner = (self.player_sprite.center_x - self.width / 2,
+                            self.player_sprite.center_y - self.height / 2)
+        self.camera_for_sprites.move_to(lower_left_corner, CAMERA_SPEED)
+
     def on_draw(self):
         arcade.start_render()
+        self.camera_for_sprites.use()
+
         self.wall_list.draw()
         self.player_sprite.draw()
 
+        self.camera_for_gui.use()
+        arcade.draw_text(f"Score: {self.score}", 10, 10, arcade.color.WHITE, 24)
+
+
     def on_key_press(self, key, modifiers):
 
-        if key == arcade.key.UP:
+        if key == arcade.key.W:
             self.player_sprite.change_y = MOVEMENT_SPEED
-        if key == arcade.key.DOWN:
+        if key == arcade.key.S:
             self.player_sprite.change_y = -MOVEMENT_SPEED
-        if key == arcade.key.LEFT:
+        if key == arcade.key.A:
             self.player_sprite.change_x = -MOVEMENT_SPEED
-        if key == arcade.key.RIGHT:
+        if key == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
 
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        if key == arcade.key.A or key == arcade.key.D:
             self.player_sprite.change_x = 0
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key == arcade.key.W or key == arcade.key.S:
             self.player_sprite.change_y = 0
 
 def main():
