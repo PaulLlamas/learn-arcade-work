@@ -1,13 +1,27 @@
-from openpyxl import Workbook
-import random
 
-work_book = Workbook()
+key = "Morgiana the Shrew"
+lower_bound = 0
+upper_bound = len(name_list)-1
+found = False
 
-work_sheet = work_book.active
+# Loop until we find the item, or our upper/lower bounds meet
+while lower_bound <= upper_bound and not found:
 
-work_sheet['A1'] = "This is a test"
+    # Find the middle position
+    middle_pos = (lower_bound + upper_bound) // 2
 
-for i in range(200):
-    work_sheet.append(["Random Number:", random.randrange(1000)])
+    # Figure out if we:
+    # move up the lower bound, or
+    # move down the upper bound, or
+    # we found what we are looking for
+    if name_list[middle_pos] < key:
+        lower_bound = middle_pos + 1
+    elif name_list[middle_pos] > key:
+        upper_bound = middle_pos - 1
+    else:
+        found = True
 
-work_book.save("sample.xlsx")
+if found:
+    print( "The name is at position", middle_pos)
+else:
+    print( "The name was not in the list." )

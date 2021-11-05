@@ -142,11 +142,30 @@ def setup_room_1():
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("boxCrate_double.png",
-                         SPRITE_SCALING)
+    wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
     wall.left = 7 * SPRITE_SIZE
     wall.bottom = 5 * SPRITE_SIZE
     room.wall_list.append(wall)
+
+    # --- Place boxes inside a loop
+    for x in range(173, 650, 64):
+        wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
+        wall.center_x = x
+        wall.center_y = 350
+        room.wall_list.append(wall)
+
+    # --- Place walls with a list
+    coordinate_list = [[400, 500],
+                       [470, 500],
+                       [400, 570],
+                       [470, 570]]
+
+    # Loop through coordinates
+    for coordinate in coordinate_list:
+        wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
+        wall.center_x = coordinate[0]
+        wall.center_y = coordinate[1]
+        room.wall_list.append(wall)
 
     # If you want coins or monsters in a level, then add that code here.
 
@@ -183,12 +202,12 @@ def setup_room_2():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
-                wall = arcade.Sprite("wall1.png", SPRITE_SCALING)
+                wall = arcade.Sprite("wall1.png", SPRITE_SCALING * 1.4)
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING)
+    wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
     wall.left = 5 * SPRITE_SIZE
     wall.bottom = 6 * SPRITE_SIZE
     room.wall_list.append(wall)
