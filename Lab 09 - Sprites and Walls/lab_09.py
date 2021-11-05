@@ -10,7 +10,7 @@ python -m arcade.examples.sprite_rooms
 import arcade
 import os
 
-SPRITE_SCALING = 0.2
+SPRITE_SCALING = 0.15
 SPRITE_NATIVE_SIZE = 528
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
@@ -151,7 +151,7 @@ def setup_room_1():
     # If you want coins or monsters in a level, then add that code here.
 
     # Load the background image for this level.
-    room.background = arcade.load_texture("cave1.png")
+    room.background = arcade.load_texture("dun1.png")
 
     return room
 
@@ -192,7 +192,7 @@ def setup_room_2():
     wall.left = 5 * SPRITE_SIZE
     wall.bottom = 6 * SPRITE_SIZE
     room.wall_list.append(wall)
-    room.background = arcade.load_texture("cave2.png")
+    room.background = arcade.load_texture("dun2.jpg")
 
     return room
 
