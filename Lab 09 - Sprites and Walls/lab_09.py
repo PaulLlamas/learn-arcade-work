@@ -17,8 +17,10 @@ SCREEN_WIDTH = SPRITE_SIZE * 14
 SCREEN_HEIGHT = SPRITE_SIZE * 10
 SCREEN_TITLE = "Lab 9 Sprite and Walls"
 
-# How fast to move, and how fast to run the animation
 MOVEMENT_SPEED = 5
+
+GRAVITY = 1
+P_JUMP = 20
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -118,17 +120,12 @@ def setup_room_1():
         room.wall_list.append(brick)
 
     # --- Place walls with a list
-    coordinate_list = [[1000, 290],[1000, 240],[1000, 190],[1000, 140],[1000, 110]]
-    #[],
-                       #[],
-                      # [],
-                       #[],
-                      # [],
-                       #[]
+    coordinate_list = [[1000, 285], [1000, 225], [1000, 165], [1000, 110], [945, 225], [945, 165], [945, 110],
+                       [890, 165], [890, 110], [835, 110]]
 
     # Loop through coordinates
     for coordinate in coordinate_list:
-        brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
+        brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.55)
         brick.center_x = coordinate[0]
         brick.center_y = coordinate[1]
         room.wall_list.append(brick)
@@ -210,8 +207,8 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         # Set up the player
         self.player_sprite = PlayerCharacter()
-        self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
+        self.player_sprite.center_x = 80
+        self.player_sprite.center_y = 80
         self.player_list.append(self.player_sprite)
 
         # Our list of rooms
@@ -228,8 +225,10 @@ class MyGame(arcade.Window):
         self.current_room = 0
 
         # Create a physics engine for this room
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                         self.rooms[self.current_room].wall_list)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             [self.player_sprite,
+                                                              self.rooms[self.current_room].wall_list],
+                                                             gravity_constant=GRAVITY)
 
     def on_draw(self):
         """
@@ -288,22 +287,25 @@ class MyGame(arcade.Window):
         # to a different room.
         if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
             self.current_room = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             [self.player_sprite,
+                                                              self.rooms[self.current_room].wall_list],
+                                                             gravity_constant=GRAVITY)
             self.player_sprite.center_x = 0
         elif self.player_sprite.center_x < 0 and self.current_room == 1:
             self.current_room = 0
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             [self.player_sprite,
+                                                              self.rooms[self.current_room].wall_list],
+                                                             gravity_constant=GRAVITY)
             self.player_sprite.center_x = SCREEN_WIDTH
 
         self.player_sprite.change_x = 0
         self.player_sprite.change_y = 0
 
-        if self.up_pressed and not self.down_pressed:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        elif self.down_pressed and not self.up_pressed:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
+        if self.up_pressed:
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = P_JUMP
         if self.left_pressed and not self.right_pressed:
             self.player_sprite.change_x = -MOVEMENT_SPEED
         elif self.right_pressed and not self.left_pressed:
