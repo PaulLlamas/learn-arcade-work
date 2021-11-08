@@ -8,7 +8,6 @@ python -m arcade.examples.sprite_rooms
 """
 
 import arcade
-import os
 
 SPRITE_SCALING = 0.15
 SPRITE_NATIVE_SIZE = 528
@@ -20,76 +19,40 @@ SCREEN_TITLE = "Lab 9 Sprite and Walls"
 
 # How fast to move, and how fast to run the animation
 MOVEMENT_SPEED = 5
-UPDATES_PER_FRAME = 16
 
 # Constants used to track if the player is facing left or right
-RIGHT_FACING = 0
-LEFT_FACING = 1
+RIGHT_FACING = 1
+LEFT_FACING = 0
 
 CHARACTER_SCALING = 5
 
 
-def load_texture_pair(filename):
-    """
-    Load a texture pair, with the second being a mirror image.
-    """
-    return [
-        # Taken from artstation.com from Lukasz Piatkowski
-        arcade.load_texture("soldier.gif"),
-        arcade.load_texture("soldier_mirror.gif", flipped_horizontally=True)
-    ]
-
-
 class PlayerCharacter(arcade.Sprite):
+
     def __init__(self):
-
         # Set up parent class
-        super().__init__()
+        super().__init__(hit_box_algorithm='Simple')
 
-        # Default to face-right
-        self.character_face_direction = RIGHT_FACING
+        self.scale = SPRITE_SCALING
+        self.textures = []
 
-        # Used for flipping between image sequences
-        self.cur_texture = 0
+        # Load a left facing texture and a right facing texture.
+        # flipped_horizontally=True will mirror the image we load.
+        texture = arcade.load_texture("soldier_idle.png")
+        self.textures.append(texture)
+        texture = arcade.load_texture("soldier_idle.png",
+                                      flipped_horizontally=True)
+        self.textures.append(texture)
 
-        self.scale = CHARACTER_SCALING
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
-        # Adjust the collision box. Default includes too much empty space
-        # side-to-side. Box is centered at sprite center, (0, 0)
-        self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
-
-        # --- Load Textures ---
-        main_path = "soldier.gif"
-
-        # Load textures for idle standing
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-
-        # Load textures for walking
-        self.walk_textures = []
-        for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
-
-    def update_animation(self, delta_time: float = 1 / 60):
-
-        # Figure out if we need to flip face left or right
-        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
-            self.character_face_direction = LEFT_FACING
-        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
-            self.character_face_direction = RIGHT_FACING
-
-        # Idle animation
-        if self.change_x == 0 and self.change_y == 0:
-            self.texture = self.idle_texture_pair[self.character_face_direction]
-            return
-
-        # Walking animation
-        self.cur_texture += 1
-        if self.cur_texture > 7 * UPDATES_PER_FRAME:
-            self.cur_texture = 0
-        frame = self.cur_texture // UPDATES_PER_FRAME
-        direction = self.character_face_direction
-        self.texture = self.walk_textures[frame][direction]
+        # Figure out if we should face left or right
+        if self.change_x < 0:
+            self.texture = self.textures[LEFT_FACING]
+        elif self.change_x > 0:
+            self.texture = self.textures[RIGHT_FACING]
 
 
 class Room:
@@ -225,13 +188,6 @@ class MyGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
         # Sprite lists
         self.current_room = 0
 
@@ -241,13 +197,18 @@ class MyGame(arcade.Window):
         self.player_list = None
         self.physics_engine = None
 
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
+
     def setup(self):
         """ Set up the game and initialize the variables. """
-        # Set up the player
-        self.player_sprite = arcade.Sprite("soldier_idle.png", SPRITE_SCALING)
-        self.player_sprite.center_x = 100
-        self.player_sprite.center_y = 100
         self.player_list = arcade.SpriteList()
+        # Set up the player
+        self.player_sprite = PlayerCharacter()
+        self.player_sprite.center_x = SCREEN_WIDTH / 2
+        self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.player_list.append(self.player_sprite)
 
         # Our list of rooms
@@ -291,22 +252,26 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.W:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.S:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.A:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.D:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+        if key == arcade.key.UP:
+            self.up_pressed = True
+        elif key == arcade.key.DOWN:
+            self.down_pressed = True
+        elif key == arcade.key.LEFT:
+            self.left_pressed = True
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.W or key == arcade.key.S:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.A or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+        if key == arcade.key.UP:
+            self.up_pressed = False
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -314,7 +279,6 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
-        self.player_list.update_animation()
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
@@ -328,6 +292,18 @@ class MyGame(arcade.Window):
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                              self.rooms[self.current_room].wall_list)
             self.player_sprite.center_x = SCREEN_WIDTH
+
+        self.player_sprite.change_x = 0
+        self.player_sprite.change_y = 0
+
+        if self.up_pressed and not self.down_pressed:
+            self.player_sprite.change_y = MOVEMENT_SPEED
+        elif self.down_pressed and not self.up_pressed:
+            self.player_sprite.change_y = -MOVEMENT_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.player_sprite.change_x = MOVEMENT_SPEED
 
 
 def main():
