@@ -21,8 +21,8 @@ SCREEN_TITLE = "Lab 9 Sprite and Walls"
 MOVEMENT_SPEED = 5
 
 # Constants used to track if the player is facing left or right
-RIGHT_FACING = 1
-LEFT_FACING = 0
+RIGHT_FACING = 0
+LEFT_FACING = 1
 
 CHARACTER_SCALING = 5
 
@@ -44,9 +44,9 @@ class PlayerCharacter(arcade.Sprite):
                                       flipped_horizontally=True)
         self.textures.append(texture)
 
+        self.texture = self.textures[RIGHT_FACING]
+
     def update(self):
-        self.center_x += self.change_x
-        self.center_y += self.change_y
 
         # Figure out if we should face left or right
         if self.change_x < 0:
@@ -105,30 +105,33 @@ def setup_room_1():
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
-    wall.left = 7 * SPRITE_SIZE
-    wall.bottom = 5 * SPRITE_SIZE
-    room.wall_list.append(wall)
+    brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
+    brick.left = 7 * SPRITE_SIZE
+    brick.bottom = 5 * SPRITE_SIZE
+    room.wall_list.append(brick)
 
     # --- Place boxes inside a loop
-    for x in range(173, 650, 64):
-        wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
-        wall.center_x = x
-        wall.center_y = 350
-        room.wall_list.append(wall)
+    for x in range(150, 800, 120):
+        brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
+        brick.center_x = x
+        brick.center_y = 350
+        room.wall_list.append(brick)
 
     # --- Place walls with a list
-    coordinate_list = [[400, 500],
-                       [470, 500],
-                       [400, 570],
-                       [470, 570]]
+    coordinate_list = [[1000, 290],[1000, 240],[1000, 190],[1000, 140],[1000, 110]]
+    #[],
+                       #[],
+                      # [],
+                       #[],
+                      # [],
+                       #[]
 
     # Loop through coordinates
     for coordinate in coordinate_list:
-        wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
-        wall.center_x = coordinate[0]
-        wall.center_y = coordinate[1]
-        room.wall_list.append(wall)
+        brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
+        brick.center_x = coordinate[0]
+        brick.center_y = coordinate[1]
+        room.wall_list.append(brick)
 
     # If you want coins or monsters in a level, then add that code here.
 
@@ -170,10 +173,10 @@ def setup_room_2():
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    wall = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
-    wall.left = 5 * SPRITE_SIZE
-    wall.bottom = 6 * SPRITE_SIZE
-    room.wall_list.append(wall)
+    brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING)
+    brick.left = 5 * SPRITE_SIZE
+    brick.bottom = 6 * SPRITE_SIZE
+    room.wall_list.append(brick)
     room.background = arcade.load_texture("dun2.jpg")
 
     return room
@@ -252,25 +255,25 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key == arcade.key.W:
             self.up_pressed = True
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.S:
             self.down_pressed = True
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.A:
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.D:
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key == arcade.key.W:
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.S:
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.A:
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.D:
             self.right_pressed = False
 
     def on_update(self, delta_time):
@@ -279,6 +282,7 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+        self.player_sprite.update()
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
