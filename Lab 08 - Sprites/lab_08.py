@@ -183,7 +183,7 @@ class MyGame(arcade.Window):
             bullet.center_x = start_x
             bullet.center_y = start_y
 
-            dest_x =                                                                                  x
+            dest_x = x
             dest_y = y
 
             x_diff = dest_x - start_x
