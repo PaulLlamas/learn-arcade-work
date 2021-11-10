@@ -221,6 +221,22 @@ def setup_room_2():
 
     return room
 
+def setup_coins_2():
+    coin = Coin()
+    coin.coin_list = arcade.SpriteList()
+    for x in range(300, 950, 150):
+        coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
+        coins.center_x = x
+        coins.center_y = 370
+        coin.coin_list.append(coins)
+    for x in range(300, 800, 150):
+        coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
+        coins.center_x = x
+        coins.center_y = SPRITE_SIZE + 30
+        coin.coin_list.append(coins)
+
+    return coin
+
 
 def setup_room_3():
     """
@@ -275,6 +291,22 @@ def setup_room_3():
     room.background = arcade.load_texture("dun3.jpg")
 
     return room
+
+def setup_coins_3():
+    coin = Coin()
+    coin.coin_list = arcade.SpriteList()
+    for x in range(300, 950, 150):
+        coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
+        coins.center_x = x
+        coins.center_y = 650
+        coin.coin_list.append(coins)
+    for x in range(300, 800, 150):
+        coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
+        coins.center_x = x
+        coins.center_y = SPRITE_SIZE + 30
+        coin.coin_list.append(coins)
+
+    return coin
 
 
 class MyGame(arcade.Window):
@@ -331,6 +363,10 @@ class MyGame(arcade.Window):
         self.current_room = 0
 
         coins = setup_coins_1()
+        self.coin_room.append(coins)
+        coins = setup_coins_2()
+        self.coin_room.append(coins)
+        coins = setup_coins_3()
         self.coin_room.append(coins)
 
         # Create a physics engine for this room
@@ -390,9 +426,9 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.physics_engine.update()
-
-        self.player_sprite.update()
+        if len(self.coin_list) != 0:
+            self.physics_engine.update()
+            self.player_sprite.update()
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
