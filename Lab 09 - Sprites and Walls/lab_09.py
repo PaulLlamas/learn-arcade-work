@@ -342,8 +342,8 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
         # Set up the player
         self.player_sprite = PlayerCharacter()
-        self.player_sprite.center_x = 80
-        self.player_sprite.center_y = 80
+        self.player_sprite.center_x = SPRITE_SIZE * 2
+        self.player_sprite.center_y = SPRITE_SIZE * 1.5
         self.player_list.append(self.player_sprite)
 
         # Our list of rooms
@@ -381,7 +381,7 @@ class MyGame(arcade.Window):
 
         # This command has to happen before we start drawing
         arcade.start_render()
-        self.player_list.draw()
+
         # Draw the background texture
         arcade.draw_lrwh_rectangle_textured(0, 0,
                                             SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -393,7 +393,7 @@ class MyGame(arcade.Window):
         # If you have coins or monsters, then copy and modify the line
         # above for each list.
         self.coin_room[self.current_coins].coin_list.draw()
-
+        self.player_list.draw()
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
 
@@ -426,9 +426,8 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        if len(self.coin_list) != 0:
-            self.physics_engine.update()
-            self.player_sprite.update()
+        self.physics_engine.update()
+        self.player_sprite.update()
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
