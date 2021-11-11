@@ -156,7 +156,7 @@ def setup_coins_1():
     for x in range(180, 830, 120):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
         coins.center_x = x
-        coins.center_y = 650
+        coins.center_y = 600
         coin.coin_list.append(coins)
     for x in range(300, 800, 150):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
@@ -228,9 +228,9 @@ def setup_coins_2():
     for x in range(300, 950, 150):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
         coins.center_x = x
-        coins.center_y = 370
+        coins.center_y = 400
         coin.coin_list.append(coins)
-    for x in range(300, 800, 150):
+    for x in range(400, 1050, 150):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
         coins.center_x = x
         coins.center_y = SPRITE_SIZE + 30
@@ -300,9 +300,9 @@ def setup_coins_3():
     for x in range(300, 950, 150):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
         coins.center_x = x
-        coins.center_y = 650
+        coins.center_y = 400
         coin.coin_list.append(coins)
-    for x in range(300, 800, 150):
+    for x in range(400, 1050, 150):
         coins = arcade.Sprite("skeleton.png", SPRITE_SCALING * 1.4)
         coins.center_x = x
         coins.center_y = SPRITE_SIZE + 30
@@ -322,13 +322,13 @@ class MyGame(arcade.Window):
 
         # Sprite lists
         self.current_room = 0
-        self.current_coins = 0
+        self.room_coins = 0
 
         # Set up the player
         self.rooms = None
         self.player_sprite = None
         self.player_list = None
-        self.coin_list = None
+        self.coins = None
         self.physics_engine = None
 
         self.left_pressed = False
@@ -337,10 +337,11 @@ class MyGame(arcade.Window):
         self.down_pressed = False
         self.score = 0
 
+        self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
+
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
         # Set up the player
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = SPRITE_SIZE * 2
@@ -349,6 +350,7 @@ class MyGame(arcade.Window):
 
         # Our list of rooms
         self.rooms = []
+        self.coins = []
 
         # Create the rooms. Extend the pattern for each room.
         room = setup_room_1()
@@ -360,11 +362,18 @@ class MyGame(arcade.Window):
         room = setup_room_3()
         self.rooms.append(room)
 
+        coins = setup_coins_1()
+        self.coins.append(coins)
+
+        coins = setup_coins_2()
+        self.coins.append(coins)
+
+        coins = setup_coins_3()
+        self.coins.append(coins)
+
         # Our starting room number
         self.current_room = 0
-
-        coins = setup_coins_1()
-        self.coin_list.append(coins)
+        self.room_coins = 0
 
         # Create a physics engine for this room
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -389,10 +398,17 @@ class MyGame(arcade.Window):
 
         # If you have coins or monsters, then copy and modify the line
         # above for each list.
-        self.coin_list.draw()
+        self.coins[self.room_coins].coin_list.draw()
         self.player_list.draw()
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
+
+        if self.score == 30:
+            arcade.draw_text("Game Over",
+                             SCREEN_WIDTH / 2,
+                             SCREEN_HEIGHT / 2,
+                             arcade.color.WHITE, 80,
+                             anchor_x="center")
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -420,69 +436,63 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+        if self.score < 30:
+            # Call update on all sprites (The sprites don't do much in this
+            # example though.)
+            self.physics_engine.update()
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        self.physics_engine.update()
-        self.player_sprite.update()
+            self.player_sprite.update()
 
-        # Do some logic here to figure out what room we are in, and if we need to go
-        # to a different room.
-        if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
-            self.current_room = 1
-            coins = setup_coins_2()
-            self.coin_list[0] = coins
-            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                 self.rooms[self.current_room].wall_list,
-                                                                 gravity_constant=GRAVITY)
-            self.player_sprite.center_x = 0
-        elif self.player_sprite.center_x < 0 and self.current_room == 1:
-            coins = setup_coins_1()
-            self.coin_list[0] = coins
-            self.current_room = 0
-            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                 self.rooms[self.current_room].wall_list,
-                                                                 gravity_constant=GRAVITY)
-            self.player_sprite.center_x = SCREEN_WIDTH
-            self.player_sprite.center_y = SPRITE_SIZE * 4.5
-        elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
-            self.current_room = 2
-            coins = setup_coins_3()
-            self.coin_list[0] = coins
-            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                 self.rooms[self.current_room].wall_list,
-                                                                 gravity_constant=GRAVITY)
-            self.player_sprite.center_x = 0
-            self.player_sprite.center_y = SPRITE_SIZE * 5
-        elif self.player_sprite.center_x < 0 and self.current_room == 2:
-            self.current_room = 1
-            coins = setup_coins_2()
-            self.coin_list[0] = coins
-            self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                 self.rooms[self.current_room].wall_list,
-                                                                 gravity_constant=GRAVITY)
-            self.player_sprite.center_x = SCREEN_WIDTH
+            # Do some logic here to figure out what room we are in, and if we need to go
+            # to a different room.
+            if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
+                self.current_room = 1
+                self.room_coins = 1
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = 0
+            elif self.player_sprite.center_x < 0 and self.current_room == 1:
+                self.current_room = 0
+                self.room_coins = 0
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = SCREEN_WIDTH
+                self.player_sprite.center_y = SPRITE_SIZE * 4.5
+            elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
+                self.current_room = 2
+                self.room_coins = 2
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = 0
+                self.player_sprite.center_y = SPRITE_SIZE * 5
+            elif self.player_sprite.center_x < 0 and self.current_room == 2:
+                self.current_room = 1
+                self.room_coins = 1
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = SCREEN_WIDTH
 
-        if self.current_room == 0:
-            self.current_coins = 0
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
 
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
+            if self.up_pressed:
+                if self.physics_engine.can_jump():
+                    self.player_sprite.change_y = P_JUMP
+            if self.left_pressed and not self.right_pressed:
+                self.player_sprite.change_x = -MOVEMENT_SPEED
+            elif self.right_pressed and not self.left_pressed:
+                self.player_sprite.change_x = MOVEMENT_SPEED
 
-        if self.up_pressed:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = P_JUMP
-        if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x = MOVEMENT_SPEED
-
-        good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                             self.coin_list)
-        for coin in good_hit_list:
-            coin.remove_from_sprite_lists()
-            self.score += 1
-            arcade.play_sound(self.good_hit_sound)
+            good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                 self.coins[self.room_coins].coin_list)
+            for coin in good_hit_list:
+                coin.remove_from_sprite_lists()
+                self.score += 1
+                arcade.play_sound(self.good_hit_sound)
 
 
 def main():
