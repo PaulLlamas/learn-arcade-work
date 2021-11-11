@@ -116,19 +116,19 @@ def setup_room_1():
 
     brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
     brick.left = SPRITE_SIZE
-    brick.bottom = 5.5 * SPRITE_SIZE
+    brick.bottom = 5 * SPRITE_SIZE
     room.wall_list.append(brick)
 
     # --- Place boxes inside a loop
     for x in range(180, 830, 120):
         brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
         brick.center_x = x
-        brick.center_y = 350
+        brick.center_y = 300
         room.wall_list.append(brick)
     for x in range(180, 830, 120):
         brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.4)
         brick.center_x = x
-        brick.center_y = 600
+        brick.center_y = 550
         room.wall_list.append(brick)
 
     # --- Place walls with a list
@@ -221,6 +221,7 @@ def setup_room_2():
 
     return room
 
+
 def setup_coins_2():
     coin = Coin()
     coin.coin_list = arcade.SpriteList()
@@ -292,6 +293,7 @@ def setup_room_3():
 
     return room
 
+
 def setup_coins_3():
     coin = Coin()
     coin.coin_list = arcade.SpriteList()
@@ -321,7 +323,6 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.current_room = 0
         self.current_coins = 0
-        self.coin_room = []
 
         # Set up the player
         self.rooms = None
@@ -363,11 +364,7 @@ class MyGame(arcade.Window):
         self.current_room = 0
 
         coins = setup_coins_1()
-        self.coin_room.append(coins)
-        coins = setup_coins_2()
-        self.coin_room.append(coins)
-        coins = setup_coins_3()
-        self.coin_room.append(coins)
+        self.coin_list.append(coins)
 
         # Create a physics engine for this room
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -392,7 +389,7 @@ class MyGame(arcade.Window):
 
         # If you have coins or monsters, then copy and modify the line
         # above for each list.
-        self.coin_room[self.current_coins].coin_list.draw()
+        self.coin_list.draw()
         self.player_list.draw()
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
@@ -433,24 +430,34 @@ class MyGame(arcade.Window):
         # to a different room.
         if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
             self.current_room = 1
+            coins = setup_coins_2()
+            self.coin_list[0] = coins
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                  self.rooms[self.current_room].wall_list,
                                                                  gravity_constant=GRAVITY)
             self.player_sprite.center_x = 0
         elif self.player_sprite.center_x < 0 and self.current_room == 1:
+            coins = setup_coins_1()
+            self.coin_list[0] = coins
             self.current_room = 0
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                  self.rooms[self.current_room].wall_list,
                                                                  gravity_constant=GRAVITY)
             self.player_sprite.center_x = SCREEN_WIDTH
+            self.player_sprite.center_y = SPRITE_SIZE * 4.5
         elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
             self.current_room = 2
+            coins = setup_coins_3()
+            self.coin_list[0] = coins
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                  self.rooms[self.current_room].wall_list,
                                                                  gravity_constant=GRAVITY)
-            self.player_sprite.center_x = SCREEN_WIDTH
+            self.player_sprite.center_x = 0
+            self.player_sprite.center_y = SPRITE_SIZE * 5
         elif self.player_sprite.center_x < 0 and self.current_room == 2:
             self.current_room = 1
+            coins = setup_coins_2()
+            self.coin_list[0] = coins
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                  self.rooms[self.current_room].wall_list,
                                                                  gravity_constant=GRAVITY)
@@ -470,7 +477,8 @@ class MyGame(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = MOVEMENT_SPEED
 
-        good_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                             self.coin_list)
         for coin in good_hit_list:
             coin.remove_from_sprite_lists()
             self.score += 1
