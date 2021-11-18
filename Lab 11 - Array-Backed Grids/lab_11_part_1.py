@@ -11,8 +11,8 @@ ROW_COUNT = 10
 COLUMN_COUNT = 10
 
 # This sets the WIDTH and HEIGHT of each grid location
-WIDTH = 20
-HEIGHT = 20
+WIDTH = 60
+HEIGHT = 60
 
 # This sets the margin between each cell
 # and on the edges of the screen.
@@ -75,60 +75,14 @@ class MyGame(arcade.Window):
         """
 
         # Change the x/y screen coordinates to grid coordinates
-        column = x // (WIDTH + MARGIN)
-        row = y // (HEIGHT + MARGIN)
+        column = int(x // (WIDTH + MARGIN))
+        row = int(y // (HEIGHT + MARGIN))
 
         print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
         if row < ROW_COUNT and column < COLUMN_COUNT:
-
-            # Flip the location between 1 and 0.
-            # if self.grid[row][column] == 0:
-            #     self.grid[row][column] = 1
-            #     if self.grid[row][column] == 0:
-            #         if row + 1 < ROW_COUNT and self.grid[row + 1][column] == 0:
-            #             self.grid[row + 1][column] = 1
-            #         elif row + 1 < ROW_COUNT and self.grid[row + 1][column] == 1:
-            #             self.grid[row + 1][column] = 0
-            #
-            #     if row - 1 < ROW_COUNT and self.grid[row - 1][column] == 0 :
-            #         self.grid[row - 1][column] = 1
-            #     elif row - 1 < ROW_COUNT and self.grid[row - 1][column] == 1:
-            #         self.grid[row - 1][column] = 0
-            #
-            #     if column + 1 < COLUMN_COUNT and self.grid[row][column + 1] == 0:
-            #         self.grid[row][column + 1] = 1
-            #     elif column + 1 < COLUMN_COUNT and self.grid[row][column + 1] == 1:
-            #         self.grid[row][column + 1] = 0
-            #
-            #     if column - 1 < COLUMN_COUNT and self.grid[row][column - 1] == 1:
-            #         self.grid[row][column - 1] = 0
-            #     elif column - 1 < COLUMN_COUNT and self.grid[row][column - 1] == 0:
-            #         self.grid[row][column - 1] = 1
-            # else:
-            #     self.grid[row][column] = 0
-            #     if row + 1 < ROW_COUNT and self.grid[row + 1][column] == 0:
-            #         self.grid[row + 1][column] = 1
-            #     elif row + 1 < ROW_COUNT and self.grid[row + 1][column] == 1:
-            #         self.grid[row + 1][column] = 0
-            #
-            #     if row - 1 < ROW_COUNT and self.grid[row - 1][column] == 0:
-            #         self.grid[row - 1][column] = 1
-            #     elif row - 1 < ROW_COUNT and self.grid[row - 1][column] == 1:
-            #         self.grid[row - 1][column] = 0
-            #
-            #     if column + 1 < COLUMN_COUNT and self.grid[row][column + 1] == 0:
-            #         self.grid[row][column + 1] = 1
-            #     elif column + 1 < COLUMN_COUNT and self.grid[row][column + 1] == 1:
-            #         self.grid[row][column + 1] = 0
-            #
-            #     if column - 1 < COLUMN_COUNT and self.grid[row][column - 1] == 1:
-            #         self.grid[row][column - 1] = 0
-            #     elif column - 1 < COLUMN_COUNT and self.grid[row][column - 1] == 0:
-            #         self.grid[row][column - 1] = 1
-
             if self.grid[row][column] == 0:
                 self.grid[row][column] = 1
             else:
