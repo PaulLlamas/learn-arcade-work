@@ -25,25 +25,25 @@ impossible swap values as the other value no longer exists.
 4. Show how the following numbers can be sorted using the selection sort. Show the numbers after each iteration of the outer loop, similar to what is shown in the book. I am NOT looking for a copy of the code to do the sort. If you include any code for problems 4-7 you are doing it wrong.
 
 97   74    8   98   47   62   12   11    0   60
-0   74    8   98   47   62   12   11   97   60
-0   8    74   98   47   62   12   11   97   60
-0   8    11   98   47   62   12   74   97   60
-0   8    11   12   47   62   98   74   97   60
-0   8    11   12   47   60   98   74   97   62
-0   8    11   12   47   60   62   74   97   98
-0   8    11   12   47   60   62   74   97   98
+0   74    8   98   47   62   12   11   97   60 (0 to pos0)
+0   8    74   98   47   62   12   11   97   60 (8 to pos1)
+0   8    11   98   47   62   12   74   97   60 (11 to pos2)
+0   8    11   12   47   62   98   74   97   60 (12 to pos3)
+0   8    11   12   47   60   98   74   97   62 (60 to pos5)
+0   8    11   12   47   60   62   74   97   98 (62 to pos6)
+0   8    11   12   47   60   62   74   97   98 (Final)
 
 5. Show how the following numbers can be sorted using the selection sort:
 
 74   92   18   47   40   58    0   36   29   25
-0   92   18   47   40   58    74   36   29   25
-0   18   92   47   40   58    74   36   29   25
-0   18   25   47   40   58    74   36   29   92
-0   18   25   29   40   58    74   36   47   92
-0   18   25   29   36   58    74   40   47   92
-0   18   25   29   36   40    74   58   47   92
-0   18   25   29   36   40    47   58   74   92
-0   18   25   29   36   40    47   58   74   92
+0   92   18   47   40   58    74   36   29   25 (0 to pos0)
+0   18   92   47   40   58    74   36   29   25 (18 to pos1)
+0   18   25   47   40   58    74   36   29   92 (25 to pos2)
+0   18   25   29   40   58    74   36   47   92 (29 to pos3)
+0   18   25   29   36   58    74   40   47   92 (36 to pos4)
+0   18   25   29   36   40    74   58   47   92 (40 to pos5)
+0   18   25   29   36   40    47   58   74   92 (47 to pos6)
+0   18   25   29   36   40    47   58   74   92 (Final)
 
 6. Show how the following numbers can be sorted using the INSERTION sort. (Note: If you think the 0 gets immediately sorted into position, you are doing it wrong. Go back and re-read how this sort works.)
 
