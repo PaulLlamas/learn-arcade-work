@@ -32,3 +32,30 @@ def sorting_sort(my_list):
 my_list = [15, 57, 14, 33, 72, 79, 26, 56, 42, 40]
 sorting_sort(my_list)
 print(my_list)
+
+# Selection sort
+# n = 10, 10 * 5 = 50
+# n = 100, 100 * 50 = 5000
+# n = 1000, 1000 * 500  =500000
+# n * (n / 2) = n^2 / 2
+
+
+# Insertion sort, worst case
+# n = 10, 10 * 5 = 50
+# n = 100, 100 * 50 = 5000
+# n = 1000, 1000 * 500  =500000
+# n * (n / 2) = n^2 / 2
+
+
+# Insertion sort, average case
+# n = 10, 10 * 2.5 = 25
+# n = 100, 100 * 25 = 2500
+# n = 1000, 1000 * 250  =250000
+# n * (n / 4) = n^2 / 4
+
+
+# Insertion sort, best case
+# n = 10, 10 * 1 = 10
+# n = 100, 100 * 1 = 100
+# n = 1000, 1000 * 1  =1000
+# n
