@@ -1,12 +1,3 @@
-"""
-Sprite move between different rooms.
-
-Artwork from https://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_rooms
-"""
-
 import arcade
 
 SPRITE_SCALING = 0.15
@@ -20,8 +11,8 @@ SKE_ICON = 5
 
 MOVEMENT_SPEED = 5
 
-GRAVITY = 2
-P_JUMP = 120
+GRAVITY = 4
+P_JUMP = 150
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
