@@ -73,8 +73,8 @@ impossible swap values as the other value no longer exists.
 
 8. Explain what `min_pos` does in the selection sort.
 
-    min_pos is position where the smallest number is located. After one scan the current position will swap the element
-    with min_pos
+    min_pos is position where the smallest number is located. After one complete scan, the current position will swap
+    the element with min_pos
 
 9. Explain what `cur_pos` does in the selection sort.
 

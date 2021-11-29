@@ -9,7 +9,7 @@ SCREEN_WIDTH = SPRITE_SIZE * 14
 SCREEN_HEIGHT = SPRITE_SIZE * 10
 SCREEN_TITLE = "Lab 9 Sprite and Walls"
 SKE_ICON = 5
-
+LIVES = 1
 MOVEMENT_SPEED = 5
 
 GRAVITY = 4
@@ -77,6 +77,12 @@ class Enemy(arcade.Sprite):
     def update(self):
 
         self.center_x += self.change_x
+
+        if self.left < 0:
+            self.change_x *= -1
+
+        if self.right > SCREEN_WIDTH:
+            self.change_x *= -1
 
 
 def setup_room_1():
@@ -302,6 +308,18 @@ def setup_coins_3():
     return coin
 
 
+def enemy_setup_3():
+    enemy = Enemy()
+    enemy.enemy_list = arcade.SpriteList()
+    for x in range((SPRITE_SIZE * 5), (SCREEN_WIDTH - SPRITE_SIZE), 240):
+        enemies = arcade.Sprite("metalslug_zombie.gif", SPRITE_SCALING * 2.2)
+        enemies.center_x = x
+        enemies.bottom = SPRITE_SIZE
+        enemy.enemy_list.append(enemies)
+
+    return enemy
+
+
 class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
@@ -320,12 +338,13 @@ class MyGame(arcade.Window):
         self.coins = None
         self.enemies = None
         self.physics_engine = None
-
+        self.dead_hit_list = None
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
         self.score = 0
+        self.lives = LIVES
 
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
 
@@ -368,6 +387,9 @@ class MyGame(arcade.Window):
         enemies = enemy_setup_2()
         self.enemies.append(enemies)
 
+        enemies = enemy_setup_3()
+        self.enemies.append(enemies)
+
         # Our starting room number
         self.current_room = 0
         self.room_coins = 0
@@ -404,6 +426,13 @@ class MyGame(arcade.Window):
                              arcade.color.WHITE, 80,
                              anchor_x="center")
 
+        if self.lives <= 0:
+            arcade.draw_text("Game Over",
+                             SCREEN_WIDTH / 2,
+                             SCREEN_HEIGHT / 2,
+                             arcade.color.WHITE, 80,
+                             anchor_x="center")
+
     def on_key_press(self, key, modifiers):
 
         if key == arcade.key.W:
@@ -429,7 +458,7 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
 
-        if self.score < 30:
+        if self.lives <= 0 or self.score < 30:
 
             self.physics_engine.update()
 
@@ -457,6 +486,7 @@ class MyGame(arcade.Window):
             elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
                 self.current_room = 2
                 self.room_coins = 2
+                self.enemy_room = 2
                 self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                      self.rooms[self.current_room].wall_list,
                                                                      gravity_constant=GRAVITY)
@@ -486,6 +516,13 @@ class MyGame(arcade.Window):
                 coin.remove_from_sprite_lists()
                 self.score += 1
                 arcade.play_sound(self.good_hit_sound)
+
+            self.dead_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                      self.enemies[self.enemy_room].enemy_list)
+            for enemy in self.dead_hit_list:
+                self.lives -= 1
+                print(self.lives)
+            #     arcade.play_sound()
 
 
 def main():
