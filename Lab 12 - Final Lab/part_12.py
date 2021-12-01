@@ -7,9 +7,9 @@ SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
 SCREEN_WIDTH = SPRITE_SIZE * 14
 SCREEN_HEIGHT = SPRITE_SIZE * 10
-SCREEN_TITLE = "Lab 9 Sprite and Walls"
+SCREEN_TITLE = "Lab 12 Project"
 SKE_ICON = 5
-LIVES = 5
+LIVES = 1
 MOVEMENT_SPEED = 5
 
 GRAVITY = 4
@@ -67,8 +67,19 @@ class Coin(arcade.Sprite):
 class Enemy(arcade.Sprite):
 
     def __init__(self):
+        # Set up parent class
+        super().__init__(hit_box_algorithm='Simple')
 
-        super().__init__()
+        self.scale = SPRITE_SCALING
+        self.textures = []
+
+        texture = arcade.load_texture("metalslug_zombie-1.png")
+        self.textures.append(texture)
+        texture = arcade.load_texture("metalslug_zombie-1.png",
+                                      flipped_horizontally=True)
+        self.textures.append(texture)
+
+        self.texture = self.textures[RIGHT_FACING]
 
         self.change_x = 0
 
@@ -83,6 +94,11 @@ class Enemy(arcade.Sprite):
 
         if self.right > SCREEN_WIDTH:
             self.change_x *= -1
+
+        if self.change_x < 0:
+            self.texture = self.textures[LEFT_FACING]
+        elif self.change_x > 0:
+            self.texture = self.textures[RIGHT_FACING]
 
 
 def setup_room_1():
@@ -332,20 +348,29 @@ class MyGame(arcade.Window):
         self.enemy_room = 0
 
         # Set up the player
-        self.rooms = None
         self.player_sprite = None
         self.player_list = None
+
+        # Set up the scene
+        self.rooms = None
         self.coins = None
         self.enemies = None
+
+        # Set up logic
         self.physics_engine = None
         self.dead_hit_list = None
+
+        # Set up controls
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
-        self.score = 0
-        self.lives = LIVES
 
+        # Set up counts
+        self.lives = LIVES
+        self.score = 0
+
+        # Set up sounds
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
 
     def setup(self):
@@ -465,6 +490,7 @@ class MyGame(arcade.Window):
 
                 self.player_sprite.update()
 
+                # Room Logic and Setup
                 if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
                     self.current_room = 1
                     self.room_coins = 1
@@ -503,14 +529,17 @@ class MyGame(arcade.Window):
                                                                          gravity_constant=GRAVITY)
                     self.player_sprite.center_x = SCREEN_WIDTH
 
+                # Player starting movement state
                 self.player_sprite.change_x = 0
                 self.player_sprite.change_y = 0
 
+                # Player precise movement logic
                 if self.left_pressed and not self.right_pressed:
                     self.player_sprite.change_x = -MOVEMENT_SPEED
                 elif self.right_pressed and not self.left_pressed:
                     self.player_sprite.change_x = MOVEMENT_SPEED
 
+                # Coin logic to increase score and eliminating sprite from list
                 good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                                      self.coins[self.room_coins].coin_list)
                 for coin in good_hit_list:
@@ -518,6 +547,7 @@ class MyGame(arcade.Window):
                     self.score += 1
                     arcade.play_sound(self.good_hit_sound)
 
+                # Player lives logic to subtract a live each time sprite touches sprite
                 self.dead_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                                           self.enemies[self.enemy_room].enemy_list)
                 for enemy in self.dead_hit_list:
