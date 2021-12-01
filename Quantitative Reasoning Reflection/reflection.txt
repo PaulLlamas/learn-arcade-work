@@ -1,0 +1,26 @@
+Paul Llamas
+December 9, 2021
+Quantitative Reasoning Reflection
+
+1.- Question 1
+I decided to use the diversity of methods by planning my idea and deciding what
+logics are needed. I decided to use if statements if I need the program to do
+something is certain criteria are met. For example, if I want the program to
+show "you lose" on the screen when the sprite was hit by the enemy, I use an if
+statement that state that if the enemy collide with the character, a string of
+words must be shown.
+
+
+2.- Question 2
+
+
+
+3.- Question 3
+
+
+
+4.- Question 4
+
+
+
+5.- Question 5
