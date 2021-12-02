@@ -28,6 +28,7 @@ Having a friendly program is important as usually there is not only one programm
 working in a code, there is usually two or more. Therefore, having a program that
 shows your logic and communicate the functionality of the part of the code is
 important.
+
 Having communicative variable names is important as it makes programming more
 efficient by calling specifically what you need and avoiding the problem of
 constantly identifying the variable and delaying the project. One example is calling
@@ -36,7 +37,22 @@ itself is not very intuitive, therefore delaying time making sure x is what you
 need. coin could be a bette variable name as it is intuitive and avoids the before
 problems.
 
+Functions names are similar to the variable names before mentioned. They need to
+be intuitive to be efficient. Let's suppose there is are many functions to draw
+something and you name them all draw1, draw2,...drawx and all of them draw different
+things. You will spend too much time checking each one of them for theone you
+need. Naming those functions for what they draw would be more efficient and intuitive.
 
+Comment are very useful because you get to communicate the function and logic of
+the following code. This is very important when not working alone. By adding
+comments, the code is more friendly to everyone as it communicates everything in
+it and everyone can read it without much difficulty.
+
+The code structure is also important to keep in an order. An organized code is
+more user-friendly and efficient. You lose less time trying to find something
+because you intuitive know where is it to do the structure. Also, it is difficult
+to read and understand logics if there is no order as you will not know what piece
+is with others.
 
 3.- Question 3
 
