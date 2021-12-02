@@ -9,9 +9,32 @@ something is certain criteria are met. For example, if I want the program to
 show "you lose" on the screen when the sprite was hit by the enemy, I use an if
 statement that state that if the enemy collide with the character, a string of
 words must be shown.
-
+I decided to use classes because are very useful tool. They help concentrate
+descriptions of apperance and behavior in a single place to later apply them to
+an object. I also decided to use functions are a very useful tool too. They help
+simplify the total code and to concentrate a specific action to later call it.
+One example I can provide is in my final lab. In the lab, I created many classes
+for enemies and coins to later apply them to objects and create them.
+I also used lists because they are such an useful thing. You can use them to
+store data in a specific place and later recall it. In my final lab, I used to
+change rooms, enemies, coins, and textures.
+In my project I also used loops. Loops are useful because they can repeat certain
+action until the number implied is met or until a condition is met. In my case,
+I used them with the functionality of creating the borderscreen, to place coins
+and enemies with distance in between, and the platforms.
 
 2.- Question 2
+Having a friendly program is important as usually there is not only one programmer
+working in a code, there is usually two or more. Therefore, having a program that
+shows your logic and communicate the functionality of the part of the code is
+important.
+Having communicative variable names is important as it makes programming more
+efficient by calling specifically what you need and avoiding the problem of
+constantly identifying the variable and delaying the project. One example is calling
+the variable x and its function is having the characteristics of the coins. x by
+itself is not very intuitive, therefore delaying time making sure x is what you
+need. coin could be a bette variable name as it is intuitive and avoids the before
+problems.
 
 
 
