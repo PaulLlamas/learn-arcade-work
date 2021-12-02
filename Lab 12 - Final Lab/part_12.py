@@ -1,9 +1,12 @@
 import random
 import arcade
+import math
 
 SPRITE_SCALING = 0.15
 SPRITE_NATIVE_SIZE = 528
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
+SWORD_SCALE = 0.05
+SWORD_SPEED = 10
 
 SCREEN_WIDTH = SPRITE_SIZE * 14
 SCREEN_HEIGHT = SPRITE_SIZE * 10
@@ -177,7 +180,7 @@ def setup_coins_1():
 def enemy_setup_1():
     enemy = Enemy()
     enemy.enemy_list = arcade.SpriteList()
-    enemies = arcade.Sprite("metalslug_zombie.gif", SPRITE_SCALING * 2.2)
+    enemies = arcade.Sprite("metalslug_zombie-1.png", SPRITE_SCALING * 2.2)
     enemies.center_x = (SCREEN_WIDTH - (SPRITE_SIZE - 25))
     enemies.bottom = SPRITE_SIZE * 4
     enemy.enemy_list.append(enemies)
@@ -254,7 +257,7 @@ def enemy_setup_2():
     enemy = Enemy()
     enemy.enemy_list = arcade.SpriteList()
     for x in range((SPRITE_SIZE * 5), (SCREEN_WIDTH - SPRITE_SIZE), 120):
-        enemies = arcade.Sprite("metalslug_zombie.gif", SPRITE_SCALING * 2.2)
+        enemies = arcade.Sprite("metalslug_zombie-1.png", SPRITE_SCALING * 2.2)
         enemies.center_x = x
         enemies.bottom = SPRITE_SIZE
         enemy.enemy_list.append(enemies)
@@ -328,7 +331,7 @@ def enemy_setup_3():
     enemy = Enemy()
     enemy.enemy_list = arcade.SpriteList()
     for x in range((SPRITE_SIZE * 5), (SCREEN_WIDTH - SPRITE_SIZE), 240):
-        enemies = arcade.Sprite("metalslug_zombie.gif", SPRITE_SCALING * 2.2)
+        enemies = arcade.Sprite("metalslug_zombie-1.png", SPRITE_SCALING * 2.2)
         enemies.center_x = x
         enemies.bottom = SPRITE_SIZE
         enemy.enemy_list.append(enemies)
@@ -350,6 +353,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = None
         self.player_list = None
+        self.sword_list = None
 
         # Set up the scene
         self.rooms = None
@@ -376,6 +380,7 @@ class MyGame(arcade.Window):
     def setup(self):
 
         self.player_list = arcade.SpriteList()
+        self.sword_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = PlayerCharacter()
@@ -441,11 +446,13 @@ class MyGame(arcade.Window):
 
         self.player_list.draw()
 
+        self.sword_list.draw()
+
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
 
-        if self.score == 30:
-            arcade.draw_text("Game Over",
+        if self.score == 40:
+            arcade.draw_text("You Win",
                              SCREEN_WIDTH / 2,
                              SCREEN_HEIGHT / 2,
                              arcade.color.WHITE, 80,
@@ -481,14 +488,38 @@ class MyGame(arcade.Window):
         elif key == arcade.key.D:
             self.right_pressed = False
 
+    def on_mouse_press(self, x, y, button, modifiers):
+
+        # Image from PNG-EGG
+        sword = arcade.Sprite("sword.png", SWORD_SCALE)
+
+        start_x = self.player_sprite.center_x
+        start_y = self.player_sprite.center_y + 30
+        sword.center_x = start_x
+        sword.center_y = start_y
+
+        dest_x = x
+        dest_y = y
+
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+
+        sword.change_x = math.cos(angle) * SWORD_SPEED
+        sword.change_y = math.sin(angle) * SWORD_SPEED
+
+        self.sword_list.append(sword)
+
     def on_update(self, delta_time):
 
         if self.lives > 0:
-            if self.score < 30:
+            if self.score < 40:
 
                 self.physics_engine.update()
 
                 self.player_sprite.update()
+
+                self.sword_list.update()
 
                 # Room Logic and Setup
                 if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
@@ -554,6 +585,24 @@ class MyGame(arcade.Window):
                     self.lives -= 1
                     print(self.lives)
                 #     arcade.play_sound()
+
+                for sword in self.sword_list:
+
+                    good_hit_list = arcade.check_for_collision_with_list(sword,
+                                                                         self.enemies[self.enemy_room].enemy_list)
+                    bad_hit_list = arcade.check_for_collision_with_list(sword, self.rooms[self.current_room].wall_list)
+
+                    if len(good_hit_list) > 0:
+                        sword.remove_from_sprite_lists()
+                    for enemy in good_hit_list:
+                        enemy.remove_from_sprite_lists()
+                        self.score += 1
+                        arcade.play_sound(self.good_hit_sound)
+
+                    if len(bad_hit_list) > 0:
+                        sword.remove_from_sprite_lists()
+                    # for wall in bad_hit_list:
+                    #     arcade.play_sound(self.bad_hit_sound)
 
 
 def main():
