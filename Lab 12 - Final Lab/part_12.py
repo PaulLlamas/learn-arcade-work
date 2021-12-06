@@ -599,8 +599,7 @@ class GameView(arcade.View):
 
             for sword in self.sword_list:
 
-                good_hit_list = arcade.check_for_collision_with_list(sword,
-                                                                     self.enemies[self.enemy_room].enemy_list)
+                good_hit_list = arcade.check_for_collision_with_list(sword, self.enemies[self.enemy_room].enemy_list)
                 bad_hit_list = arcade.check_for_collision_with_list(sword, self.rooms[self.current_room].wall_list)
 
                 if len(good_hit_list) > 0:
@@ -671,8 +670,10 @@ class WinView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75, arcade.color.WHITE, font_size=24, anchor_x="center")
+        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE,
+                         font_size=50, anchor_x="center")
+        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75, arcade.color.WHITE,
+                         font_size=24, anchor_x="center")
 
         time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
         arcade.draw_text(f"Time taken: {time_taken_formatted}",

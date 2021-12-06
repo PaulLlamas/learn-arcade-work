@@ -61,7 +61,8 @@ statements to print the result and make sure everything is working correctly. Wh
 to check what type of error is and in what line. Once I know the type of error and where is it, I can check the logic
 of the thing and solve it.
 One way I used to determined that the data I was getting was correct, was to print the total and/or print each step. In
-this way I know if there is an error and where.
+this way I know if there is an error and where. I also used the debugger on pycharm when I wanted to check in a specific
+point of my code. This way I know what is running and what is not.
 
 4.- Question 4
 
