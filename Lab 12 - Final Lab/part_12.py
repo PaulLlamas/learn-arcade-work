@@ -1,4 +1,3 @@
-import random
 import arcade
 import math
 
@@ -23,6 +22,28 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 CHARACTER_SCALING = 5
+
+
+class InstructionView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.ORANGE_PEEL)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Instructions Screen", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Use A and D to move, mouse to aim, and click to\n"
+                         "shoot", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75,
+                         arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("Use W to jump.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,
+                         arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("Click to advance", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 225,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
 
 
 class PlayerCharacter(arcade.Sprite):
@@ -339,11 +360,11 @@ def enemy_setup_3():
     return enemy
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
 
-    def __init__(self, width, height, title):
+    def __init__(self):
 
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.current_room = 0
@@ -373,6 +394,7 @@ class MyGame(arcade.Window):
         # Set up counts
         self.lives = LIVES
         self.score = 0
+        self.time_taken = 0
 
         # Set up sounds
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
@@ -451,20 +473,6 @@ class MyGame(arcade.Window):
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
 
-        if self.score == 40:
-            arcade.draw_text("You Win",
-                             SCREEN_WIDTH / 2,
-                             SCREEN_HEIGHT / 2,
-                             arcade.color.WHITE, 80,
-                             anchor_x="center")
-
-        if self.lives <= 0:
-            arcade.draw_text("Game Over",
-                             SCREEN_WIDTH / 2,
-                             SCREEN_HEIGHT / 2,
-                             arcade.color.WHITE, 80,
-                             anchor_x="center")
-
     def on_key_press(self, key, modifiers):
 
         if key == arcade.key.W:
@@ -505,6 +513,8 @@ class MyGame(arcade.Window):
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
 
+        sword.angle = math.degrees(angle + 45)
+
         sword.change_x = math.cos(angle) * SWORD_SPEED
         sword.change_y = math.sin(angle) * SWORD_SPEED
 
@@ -512,102 +522,178 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
 
-        if self.lives > 0:
-            if self.score < 40:
+        if self.lives > 0 or self.score < 40:
 
-                self.physics_engine.update()
+            self.time_taken += delta_time
 
-                self.player_sprite.update()
+            self.physics_engine.update()
 
-                self.sword_list.update()
+            self.player_sprite.update()
 
-                # Room Logic and Setup
-                if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
-                    self.current_room = 1
-                    self.room_coins = 1
-                    self.enemy_room = 1
-                    self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                         self.rooms[self.current_room].wall_list,
-                                                                         gravity_constant=GRAVITY)
-                    self.player_sprite.center_x = 0
+            self.sword_list.update()
 
-                elif self.player_sprite.center_x < 0 and self.current_room == 1:
-                    self.current_room = 0
-                    self.room_coins = 0
-                    self.enemy_room = 0
-                    self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                         self.rooms[self.current_room].wall_list,
-                                                                         gravity_constant=GRAVITY)
-                    self.player_sprite.center_x = SCREEN_WIDTH
-                    self.player_sprite.center_y = SPRITE_SIZE * 4.5
+            # Room Logic and Setup
+            if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
+                self.current_room = 1
+                self.room_coins = 1
+                self.enemy_room = 1
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = 0
 
-                elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
-                    self.current_room = 2
-                    self.room_coins = 2
-                    self.enemy_room = 2
-                    self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                         self.rooms[self.current_room].wall_list,
-                                                                         gravity_constant=GRAVITY)
-                    self.player_sprite.center_x = 0
-                    self.player_sprite.center_y = SPRITE_SIZE * 5
+            elif self.player_sprite.center_x < 0 and self.current_room == 1:
+                self.current_room = 0
+                self.room_coins = 0
+                self.enemy_room = 0
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = SCREEN_WIDTH
+                self.player_sprite.center_y = SPRITE_SIZE * 4.5
 
-                elif self.player_sprite.center_x < 0 and self.current_room == 2:
-                    self.current_room = 1
-                    self.room_coins = 1
-                    self.enemy_room = 1
-                    self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                                         self.rooms[self.current_room].wall_list,
-                                                                         gravity_constant=GRAVITY)
-                    self.player_sprite.center_x = SCREEN_WIDTH
+            elif self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 1:
+                self.current_room = 2
+                self.room_coins = 2
+                self.enemy_room = 2
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = 0
+                self.player_sprite.center_y = SPRITE_SIZE * 5
 
-                # Player starting movement state
-                self.player_sprite.change_x = 0
-                self.player_sprite.change_y = 0
+            elif self.player_sprite.center_x < 0 and self.current_room == 2:
+                self.current_room = 1
+                self.room_coins = 1
+                self.enemy_room = 1
+                self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                                     self.rooms[self.current_room].wall_list,
+                                                                     gravity_constant=GRAVITY)
+                self.player_sprite.center_x = SCREEN_WIDTH
 
-                # Player precise movement logic
-                if self.left_pressed and not self.right_pressed:
-                    self.player_sprite.change_x = -MOVEMENT_SPEED
-                elif self.right_pressed and not self.left_pressed:
-                    self.player_sprite.change_x = MOVEMENT_SPEED
+            # Player starting movement state
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
 
-                # Coin logic to increase score and eliminating sprite from list
-                good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                                     self.coins[self.room_coins].coin_list)
-                for coin in good_hit_list:
-                    coin.remove_from_sprite_lists()
+            # Player precise movement logic
+            if self.left_pressed and not self.right_pressed:
+                self.player_sprite.change_x = -MOVEMENT_SPEED
+            elif self.right_pressed and not self.left_pressed:
+                self.player_sprite.change_x = MOVEMENT_SPEED
+
+            # Coin logic to increase score and eliminating sprite from list
+            good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                 self.coins[self.room_coins].coin_list)
+            for coin in good_hit_list:
+                coin.remove_from_sprite_lists()
+                self.score += 1
+                arcade.play_sound(self.good_hit_sound)
+
+            # Player lives logic to subtract a live each time sprite touches sprite
+            self.dead_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                      self.enemies[self.enemy_room].enemy_list)
+            for enemy in self.dead_hit_list:
+                self.lives -= 1
+                print(self.lives)
+            #     arcade.play_sound()
+
+            for sword in self.sword_list:
+
+                good_hit_list = arcade.check_for_collision_with_list(sword,
+                                                                     self.enemies[self.enemy_room].enemy_list)
+                bad_hit_list = arcade.check_for_collision_with_list(sword, self.rooms[self.current_room].wall_list)
+
+                if len(good_hit_list) > 0:
+                    sword.remove_from_sprite_lists()
+
+                for enemy in good_hit_list:
+                    enemy.remove_from_sprite_lists()
                     self.score += 1
                     arcade.play_sound(self.good_hit_sound)
 
-                # Player lives logic to subtract a live each time sprite touches sprite
-                self.dead_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                                          self.enemies[self.enemy_room].enemy_list)
-                for enemy in self.dead_hit_list:
-                    self.lives -= 1
-                    print(self.lives)
-                #     arcade.play_sound()
+                if len(bad_hit_list) > 0:
+                    sword.remove_from_sprite_lists()
+                # for wall in bad_hit_list:
+                #     arcade.play_sound(self.bad_hit_sound)
 
-                for sword in self.sword_list:
+            if self.lives <= 0:
+                game_over_view = GameOverView()
+                game_over_view.time_taken = self.time_taken
+                self.window.set_mouse_visible(True)
+                self.window.show_view(game_over_view)
 
-                    good_hit_list = arcade.check_for_collision_with_list(sword,
-                                                                         self.enemies[self.enemy_room].enemy_list)
-                    bad_hit_list = arcade.check_for_collision_with_list(sword, self.rooms[self.current_room].wall_list)
+            if self.score == 40:
+                win_view = WinView()
+                win_view.time_taken = self.time_taken
+                self.window.set_mouse_visible(True)
+                self.window.show_view(win_view)
 
-                    if len(good_hit_list) > 0:
-                        sword.remove_from_sprite_lists()
-                    for enemy in good_hit_list:
-                        enemy.remove_from_sprite_lists()
-                        self.score += 1
-                        arcade.play_sound(self.good_hit_sound)
 
-                    if len(bad_hit_list) > 0:
-                        sword.remove_from_sprite_lists()
-                    # for wall in bad_hit_list:
-                    #     arcade.play_sound(self.bad_hit_sound)
+class GameOverView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.time_taken = 0
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Game Over", 240, 400, arcade.color.WHITE, 54)
+        arcade.draw_text("Click to restart", 310, 300, arcade.color.WHITE, 24)
+
+        time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
+        arcade.draw_text(f"Time taken: {time_taken_formatted}",
+                         SCREEN_WIDTH / 2,
+                         200,
+                         arcade.color.GRAY,
+                         font_size=15,
+                         anchor_x="center")
+
+        output_total = f"Total Score: {self.window.total_score}"
+        arcade.draw_text(output_total, 10, 10, arcade.color.WHITE, 14)
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+
+class WinView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.time_taken = 0
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("You Won!", 240, 400, arcade.color.WHITE, 54)
+        arcade.draw_text("Click to restart", 310, 300, arcade.color.WHITE, 24)
+
+        time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
+        arcade.draw_text(f"Time taken: {time_taken_formatted}",
+                         SCREEN_WIDTH / 2,
+                         200,
+                         arcade.color.GRAY,
+                         font_size=15,
+                         anchor_x="center")
+
+        output_total = f"Total Score: {self.window.total_score}"
+        arcade.draw_text(output_total, 10, 10, arcade.color.WHITE, 14)
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window.total_score = 0
+    instruction_view = InstructionView()
+    window.show_view(instruction_view)
     arcade.run()
 
 

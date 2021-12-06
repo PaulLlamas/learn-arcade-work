@@ -1,121 +1,26 @@
-""" Sprite Sample Program """
+# Multiple errors
+try:
+    # Open the file
+    filename = "myfile.txt"
+    my_file = open(filename)
 
-import arcade
+    # Read from the file and strip any trailing line feeds
+    my_line = my_file.readline()
+    my_line = my_line.strip()
 
-# --- Constants ---
-SPRITE_SCALING_BOX = 0.5
-SPRITE_SCALING_PLAYER = 0.75
+    # Convert to a number
+    my_int = int(my_line)
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
+    # Do a calculation
+    my_calculated_value = 101 / my_int
 
-MOVEMENT_SPEED = 5
-
-
-class MyGame(arcade.Window):
-    """ This class represents the main window of the game. """
-
-    def __init__(self):
-        """ Initializer """
-        # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprites With Walls Example")
-
-        self.player_list = None
-        self.wall_list = None
-
-        self.player_sprite = None
-
-        self.physics_engine = None
-
-        self.score = 0
-
-        self.camera_for_sprites = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera_for_gui = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-
-    def setup(self):
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-
-        self.player_sprite = arcade.Sprite("Komodon.png", SPRITE_SCALING_PLAYER)
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 64
-        self.player_list.append(self.player_sprite)
-
-        wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING_BOX)
-        wall.center_x = 200
-        wall.center_y = 400
-        self.wall_list.append(wall)
-
-        for i in range(10):
-            wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING_BOX)
-            wall.center_x = i * 64
-            wall.center_y = 200
-            self.wall_list.append(wall)
-
-        for x in range(100, 600, 64):
-            wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING_BOX)
-            wall.center_x = x
-            wall.center_y = 500
-            self.wall_list.append(wall)
-
-        coordinate_list = [[400, 500],
-                           [470, 500],
-                           [400, 570],
-                           [470, 570]]
-        for coordinate in coordinate_list:
-            wall = arcade.Sprite("boxCrate_double.png", SPRITE_SCALING_BOX)
-            wall.center_x = coordinate[0]
-            wall.center_y = coordinate[1]
-            self.wall_list.append(wall)
-
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
-
-    def update(self, delta_time: float):
-        self.physics_engine.update()
-
-        CAMERA_SPEED = 0.5
-        lower_left_corner = (self.player_sprite.center_x - self.width / 2,
-                            self.player_sprite.center_y - self.height / 2)
-        self.camera_for_sprites.move_to(lower_left_corner, CAMERA_SPEED)
-
-    def on_draw(self):
-        arcade.start_render()
-        self.camera_for_sprites.use()
-
-        self.wall_list.draw()
-        self.player_sprite.draw()
-
-        self.camera_for_gui.use()
-        arcade.draw_text(f"Score: {self.score}", 10, 10, arcade.color.WHITE, 24)
-
-
-    def on_key_press(self, key, modifiers):
-
-        if key == arcade.key.W:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        if key == arcade.key.S:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
-        if key == arcade.key.A:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        if key == arcade.key.D:
-            self.player_sprite.change_x = MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-
-        if key == arcade.key.A or key == arcade.key.D:
-            self.player_sprite.change_x = 0
-        if key == arcade.key.W or key == arcade.key.S:
-            self.player_sprite.change_y = 0
-
-def main():
-    window = MyGame()
-    window.setup()
-    arcade.run()
-
-
-if __name__ == "__main__":
-    main()
+except FileNotFoundError:
+    print(f"Could not find the file '{filename}'.")
+except IOError:
+    print(f"Input/Output error when accessing the file '{filename}'.")
+except ValueError:
+    print("Could not convert data to an integer.")
+except ZeroDivisionError:
+    print("Division by zero error.")
+except:
+    print("Unexpected error.")
