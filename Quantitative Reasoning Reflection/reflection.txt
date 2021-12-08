@@ -4,13 +4,13 @@ Quantitative Reasoning Reflection
 
 1.- Question 1
 I decided to use the diversity of methods by planning my idea and deciding what
-logics are needed. I decided to use if statements if I need the program to do
+logics are needed. I decided to use an if statements if I need the program to do
 something is certain criteria are met. For example, if I want the program to
-show "you lose" on the screen when the sprite was hit by the enemy, I use an if
-statement that state that if the enemy collide with the character, a string of
+show "you lose" on the screen when the enemy hit the sprite, I use an if
+statement that state that if the enemy collides with the character, a string of
 words must be shown.
 I decided to use classes because are very useful tool. They help concentrate
-descriptions of apperance and behavior in a single place to later apply them to
+descriptions of appearance and behavior in a single place to later apply them to
 an object. I also decided to use functions are a very useful tool too. They help
 simplify the total code and to concentrate a specific action to later call it.
 One example I can provide is in my final lab. In the lab, I created many classes
@@ -26,24 +26,24 @@ and enemies with distance in between, and the platforms.
 2.- Question 2
 Having a friendly program is important as usually there is not only one programmer
 working in a code, there is usually two or more. Therefore, having a program that
-shows your logic and communicate the functionality of the part of the code is
+shows your logic and communicate the functionality of the part of the code that is
 important.
 
 Having communicative variable names is important as it makes programming more
 efficient by calling specifically what you need and avoiding the problem of
 constantly identifying the variable and delaying the project. One example is calling
-the variable x and its function is having the characteristics of the coins. x by
+the variable x and its function have the characteristics of the coins. x by
 itself is not very intuitive, therefore delaying time making sure x is what you
-need. coin could be a bette variable name as it is intuitive and avoids the before
+need. coin could be a better variable name as it is intuitive and avoids the before
 problems.
 
 Functions names are similar to the variable names before mentioned. They need to
 be intuitive to be efficient. Let's suppose there is are many functions to draw
-something and you name them all draw1, draw2,...drawx and all of them draw different
-things. You will spend too much time checking each one of them for theone you
-need. Naming those functions for what they draw would be more efficient and intuitive.
+something and you name them all draw1, draw2,...draw_x and all of them draw different
+things. You will spend too much time checking each one of them for the one you
+need. Naming those functions for what they do would be more efficient and intuitive.
 
-Comment are very useful because you get to communicate the function and logic of
+Comments are very useful because you get to communicate the function and logic of
 the following code. This is very important when not working alone. By adding
 comments, the code is more friendly to everyone as it communicates everything in
 it and everyone can read it without much difficulty.
@@ -51,30 +51,30 @@ it and everyone can read it without much difficulty.
 The code structure is also important to keep in order. An organized code is
 more user-friendly and efficient. You lose less time trying to find something
 because you intuitive know where is it to do the structure. Also, it is difficult
-to read and understand logics if there is no order as you will not know what piece
-is with others.
+to read and understand the logic if there is no order as you will not know what
+piece is with others.
 
 3.- Question 3
-To test and evaluate the accuracy of my code I did many things. First, I constantly
+To test and evaluate the accuracy of my code, I did many things. First, I constantly
 run my code to test that the logics are correct and everything is doing what I want
 them to do. Another way I test and evaluate my code is by using print statements to
 print the result and make sure everything is working correctly. When an error pop
 out, I use the run window to check what type of error is and in what line. Once I
-know the type of error and where is it, I can check the logic of the thing and solve it.
+know the type of error and where it is, I can check the logic of the thing and solve it.
 
-One way I used to determined that the data I was getting was correct, was to print
-the total and/or print each step. In this way I know if there is an error and where.
+One way I used to determine that the data I was getting was correct was to print
+the total and/or print each step. In this way, I know if there is an error and where.
 I also used the debugger on pycharm when I wanted to check in a specific point of my
-code. This way I know what is running and what is not.
+code. This way, I know what is running and what is not.
 
 4.- Question 4
 Even though numerical methods are efficient to predict a continuous increase or
 decrease, it is not very helpful with the unpredictable. Evaluating a student by
 their grades or an athlete by their stats is not optimal because it does not
-demonstrate the persons potential. Numbers also does not represent a whole
+demonstrate the person's potential. Numbers also do not represent a whole
 situation as situations are affected by an almost infinite amount of things
-that can't be controlled. Unpredictability is the main reason that numerical
-methods are not the optimal way to make decisions, it is its limitation. Numbers
+that cannot be controlled. Unpredictability is the main reason that numerical
+methods are not the optimal way to make decisions; it is its limitation. Numbers
 can control things that are predictable and not subject to change. However,
-it can't replace humans as humans have emotions, and those emotions makes
+it cannot replace humans as humans have emotions, and those emotions make
 them unpredictable.
