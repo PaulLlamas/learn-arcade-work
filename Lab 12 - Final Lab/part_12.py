@@ -12,10 +12,10 @@ SCREEN_HEIGHT = SPRITE_SIZE * 10
 SCREEN_TITLE = "Lab 12 Project"
 SKE_ICON = 5
 LIVES = 1
-MOVEMENT_SPEED = 2
-UPDATES_PER_FRAME = 16
+MOVEMENT_SPEED = 5
+UPDATES_PER_FRAME = 2
 
-GRAVITY = 5
+GRAVITY = 3.5
 P_JUMP = 25
 
 # Constants used to track if the player is facing left or right
