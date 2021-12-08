@@ -14,8 +14,8 @@ SKE_ICON = 5
 LIVES = 1
 MOVEMENT_SPEED = 5
 
-GRAVITY = 4
-P_JUMP = 150
+GRAVITY = 2
+P_JUMP = 25
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -513,7 +513,7 @@ class GameView(arcade.View):
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
 
-        sword.angle = math.degrees(angle + 45)
+        sword.angle = math.degrees(angle + 340)
 
         sword.change_x = math.cos(angle) * SWORD_SPEED
         sword.change_y = math.sin(angle) * SWORD_SPEED
@@ -573,8 +573,6 @@ class GameView(arcade.View):
 
             # Player starting movement state
             self.player_sprite.change_x = 0
-            self.player_sprite.change_y = 0
-
             # Player precise movement logic
             if self.left_pressed and not self.right_pressed:
                 self.player_sprite.change_x = -MOVEMENT_SPEED
