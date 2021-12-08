@@ -24,20 +24,42 @@ LEFT_FACING = 1
 CHARACTER_SCALING = 5
 
 
+class MenuView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.WHITE)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Welcome to The Dungeon", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 150,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("The Mighty Kingdom sent you to clean the dungeon", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 75,
+                         arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("and collect the skeletons of previous mighty people",
+                         SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("Kill all monsters and collect the skeletons!",
+                         SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75, arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("Click to advance", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,
+                         arcade.color.GRAY, font_size=20, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        instructions_view = InstructionView()
+        self.window.show_view(instructions_view)
+
+
 class InstructionView(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ORANGE_PEEL)
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Instructions Screen", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+        arcade.draw_text("Instructions Screen", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 150,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
         arcade.draw_text("Use A and D to move, mouse to aim, and click to\n"
-                         "shoot", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75,
+                         "shoot", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 75,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
-        arcade.draw_text("Use W to jump.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,
+        arcade.draw_text("Use W to jump.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
-        arcade.draw_text("Click to advance", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 225,
+        arcade.draw_text("Click to advance", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75,
                          arcade.color.GRAY, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
@@ -636,9 +658,9 @@ class GameOverView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE,
+        arcade.draw_text("Game Over", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 75, arcade.color.WHITE,
                          font_size=50, anchor_x="center")
-        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75, arcade.color.WHITE,
+        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE,
                          font_size=24, anchor_x="center")
 
         time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
@@ -668,9 +690,9 @@ class WinView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE,
+        arcade.draw_text("You Won!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 75, arcade.color.WHITE,
                          font_size=50, anchor_x="center")
-        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75, arcade.color.WHITE,
+        arcade.draw_text("Click to restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE,
                          font_size=24, anchor_x="center")
 
         time_taken_formatted = f"{round(self.time_taken, 2)} seconds"
@@ -693,8 +715,8 @@ class WinView(arcade.View):
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.total_score = 0
-    instruction_view = InstructionView()
-    window.show_view(instruction_view)
+    menu_view = MenuView()
+    window.show_view(menu_view)
     arcade.run()
 
 
