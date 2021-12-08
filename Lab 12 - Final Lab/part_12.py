@@ -12,9 +12,10 @@ SCREEN_HEIGHT = SPRITE_SIZE * 10
 SCREEN_TITLE = "Lab 12 Project"
 SKE_ICON = 5
 LIVES = 1
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 2
+UPDATES_PER_FRAME = 16
 
-GRAVITY = 2
+GRAVITY = 5
 P_JUMP = 25
 
 # Constants used to track if the player is facing left or right
@@ -22,6 +23,16 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 CHARACTER_SCALING = 5
+
+
+def load_texture_pair(filename):
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, flipped_horizontally=True)
+    ]
 
 
 class MenuView(arcade.View):
@@ -54,9 +65,8 @@ class InstructionView(arcade.View):
         arcade.start_render()
         arcade.draw_text("Instructions Screen", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 150,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Use A and D to move, mouse to aim, and click to\n"
-                         "shoot", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 75,
-                         arcade.color.BLACK, font_size=30, anchor_x="center")
+        arcade.draw_text("Use A and D to move, mouse to aim, and click to shoot", SCREEN_WIDTH / 2,
+                         SCREEN_HEIGHT / 2 + 75, arcade.color.BLACK, font_size=30, anchor_x="center")
         arcade.draw_text("Use W to jump.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                          arcade.color.BLACK, font_size=30, anchor_x="center")
         arcade.draw_text("Click to advance", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 75,
@@ -74,23 +84,43 @@ class PlayerCharacter(arcade.Sprite):
         # Set up parent class
         super().__init__(hit_box_algorithm='Simple')
 
+        # Default to face-right
+        self.character_face_direction = RIGHT_FACING
+
+        # Used for flipping between image sequences
+        self.cur_texture = 0
+
         self.scale = SPRITE_SCALING
         self.textures = []
 
-        texture = arcade.load_texture("soldier_idle.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture("soldier_idle.png",
-                                      flipped_horizontally=True)
-        self.textures.append(texture)
+        # Load textures for idle standing
+        self.idle_texture_pair = load_texture_pair("soldier_idle.png")
 
-        self.texture = self.textures[RIGHT_FACING]
+        self.walk_textures = []
+        for i in range(16):
+            texture = load_texture_pair(f"soldier_run-{i}.png")
+            self.walk_textures.append(texture)
 
-    def update(self):
+    def update_animation(self, delta_time: float = 1 / 60):
 
-        if self.change_x < 0:
-            self.texture = self.textures[LEFT_FACING]
-        elif self.change_x > 0:
-            self.texture = self.textures[RIGHT_FACING]
+        # Figure out if we need to flip face left or right
+        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
+            self.character_face_direction = LEFT_FACING
+        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
+            self.character_face_direction = RIGHT_FACING
+
+        # Idle animation
+        if self.change_x == 0 and self.change_y == 0:
+            self.texture = self.idle_texture_pair[self.character_face_direction]
+            return
+
+        # Walking animation
+        self.cur_texture += 1
+        if self.cur_texture > 15 * UPDATES_PER_FRAME:
+            self.cur_texture = 0
+        frame = self.cur_texture // UPDATES_PER_FRAME
+        direction = self.character_face_direction
+        self.texture = self.walk_textures[frame][direction]
 
 
 class Room:
@@ -119,11 +149,17 @@ class Enemy(arcade.Sprite):
         self.scale = SPRITE_SCALING
         self.textures = []
 
+        # Texture from The Indie Stone Forums
         texture = arcade.load_texture("metalslug_zombie-1.png")
         self.textures.append(texture)
         texture = arcade.load_texture("metalslug_zombie-1.png",
                                       flipped_horizontally=True)
         self.textures.append(texture)
+
+        self.walk_textures = []
+        for i in range(16):
+            texture = load_texture_pair(f"metalslug_zombie-{i}.png")
+            self.walk_textures.append(texture)
 
         self.texture = self.textures[RIGHT_FACING]
 
@@ -550,7 +586,8 @@ class GameView(arcade.View):
 
             self.physics_engine.update()
 
-            self.player_sprite.update()
+            self.player_list.update()
+            self.player_list.update_animation()
 
             self.sword_list.update()
 
