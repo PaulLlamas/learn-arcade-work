@@ -12,10 +12,10 @@ SCREEN_HEIGHT = SPRITE_SIZE * 10
 SCREEN_TITLE = "Lab 12 Project"
 SKE_ICON = 5
 LIVES = 1
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 3.5
 UPDATES_PER_FRAME = 2
 
-GRAVITY = 3.5
+GRAVITY = 2.5
 P_JUMP = 25
 
 # Constants used to track if the player is facing left or right
@@ -24,6 +24,8 @@ LEFT_FACING = 1
 
 CHARACTER_SCALING = 5
 
+# Skyrim soundtrack "Dragonborn"
+background_soundtrack = arcade.sound.load_sound("Dragonborn.wav")
 
 def load_texture_pair(filename):
     """
@@ -91,7 +93,7 @@ class PlayerCharacter(arcade.Sprite):
         self.cur_texture = 0
 
         self.scale = SPRITE_SCALING
-        self.textures = []
+        self._points = [[-22, -192], [22, -192], [22, 192], [-22, 192]]
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair("soldier_idle.png")
@@ -287,14 +289,14 @@ def setup_room_2():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0 and x == 0:
-                wall = arcade.Sprite("wall1.png", SPRITE_SCALING * 1.4)
+                wall = arcade.Sprite("wall1.png", SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
 
     # --- Place walls with a list
-    coordinate_list = [[140, 285], [140, 225], [140, 165], [140, 110], [195, 225], [195, 165], [195, 110],
-                       [250, 165], [250, 110], [250, 110], [305, 110]]
+    coordinate_list = [[110, 285], [110, 225], [110, 165], [110, 110], [165, 225], [165, 165], [165, 110],
+                       [220, 165], [220, 110], [220, 110], [275, 110]]
 
     # Loop through coordinates
     for coordinate in coordinate_list:
@@ -364,13 +366,13 @@ def setup_room_3():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
-                wall = arcade.Sprite("wall1.png", SPRITE_SCALING * 1.4)
+                wall = arcade.Sprite("wall1.png", SPRITE_SCALING)
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
 
-    coordinate_list = [[140, 285], [140, 225], [140, 165], [140, 110], [195, 225], [195, 165], [195, 110], [250, 165],
-                       [250, 110], [250, 110], [305, 110]]
+    coordinate_list = [[110, 285], [110, 225], [110, 165], [110, 110], [165, 225], [165, 165], [165, 110], [220, 165],
+                       [220, 110], [220, 110], [275, 110]]
 
     for coordinate in coordinate_list:
         brick = arcade.Sprite("dunbrick.png", SPRITE_SCALING * 1.55)
@@ -438,6 +440,7 @@ class GameView(arcade.View):
         self.rooms = None
         self.coins = None
         self.enemies = None
+        self.golden_coin = None
 
         # Set up logic
         self.physics_engine = None
@@ -457,6 +460,7 @@ class GameView(arcade.View):
         # Set up sounds
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
 
+
     def setup(self):
 
         self.player_list = arcade.SpriteList()
@@ -472,6 +476,7 @@ class GameView(arcade.View):
         self.rooms = []
         self.coins = []
         self.enemies = []
+        self.golden_coin = []
 
         room = setup_room_1()
         self.rooms.append(room)
@@ -521,6 +526,8 @@ class GameView(arcade.View):
         self.rooms[self.current_room].wall_list.draw()
 
         self.coins[self.room_coins].coin_list.draw()
+
+        self.golden_coin.draw()
 
         self.enemies[self.enemy_room].enemy_list.draw()
 
@@ -665,6 +672,7 @@ class GameView(arcade.View):
                 for enemy in good_hit_list:
                     enemy.remove_from_sprite_lists()
                     self.score += 1
+
                     arcade.play_sound(self.good_hit_sound)
 
                 if len(bad_hit_list) > 0:
@@ -754,6 +762,7 @@ def main():
     window.total_score = 0
     menu_view = MenuView()
     window.show_view(menu_view)
+    arcade.play_sound(background_soundtrack)
     arcade.run()
 
 
