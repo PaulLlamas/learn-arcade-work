@@ -27,6 +27,7 @@ CHARACTER_SCALING = 5
 # Skyrim soundtrack "Dragonborn"
 background_soundtrack = arcade.sound.load_sound("Dragonborn.wav")
 
+
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
@@ -92,8 +93,7 @@ class PlayerCharacter(arcade.Sprite):
         # Used for flipping between image sequences
         self.cur_texture = 0
 
-        self.scale = SPRITE_SCALING
-        self._points = [[-22, -192], [22, -192], [22, 192], [-22, 192]]
+        self._points = [[-22, -220], [22, -220], [22, 192], [-22, 192]]
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair("soldier_idle.png")
@@ -102,6 +102,8 @@ class PlayerCharacter(arcade.Sprite):
         for i in range(16):
             texture = load_texture_pair(f"soldier_run-{i}.png")
             self.walk_textures.append(texture)
+
+        self.scale = SPRITE_SCALING
 
     def update_animation(self, delta_time: float = 1 / 60):
 
@@ -149,21 +151,6 @@ class Enemy(arcade.Sprite):
         super().__init__(hit_box_algorithm='Simple')
 
         self.scale = SPRITE_SCALING
-        self.textures = []
-
-        # Texture from The Indie Stone Forums
-        texture = arcade.load_texture("metalslug_zombie-1.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture("metalslug_zombie-1.png",
-                                      flipped_horizontally=True)
-        self.textures.append(texture)
-
-        self.walk_textures = []
-        for i in range(16):
-            texture = load_texture_pair(f"metalslug_zombie-{i}.png")
-            self.walk_textures.append(texture)
-
-        self.texture = self.textures[RIGHT_FACING]
 
         self.change_x = 0
 
@@ -178,11 +165,6 @@ class Enemy(arcade.Sprite):
 
         if self.right > SCREEN_WIDTH:
             self.change_x *= -1
-
-        if self.change_x < 0:
-            self.texture = self.textures[LEFT_FACING]
-        elif self.change_x > 0:
-            self.texture = self.textures[RIGHT_FACING]
 
 
 def setup_room_1():
@@ -269,6 +251,17 @@ def enemy_setup_1():
     return enemy
 
 
+def golden_setup1():
+    golden = Coin()
+    golden.golden_list = arcade.SpriteList()
+    golden_skeleton = arcade.Sprite("goldenskeleton.png", SPRITE_SCALING * 1.4)
+    golden_skeleton.center_x = (SCREEN_WIDTH - (SPRITE_SIZE - 25))
+    golden_skeleton.bottom = SPRITE_SIZE * 4
+    golden.golden_list.append(golden_skeleton)
+
+    return golden
+
+
 def setup_room_2():
 
     room = Room()
@@ -346,6 +339,17 @@ def enemy_setup_2():
     return enemy
 
 
+def golden_setup2():
+    golden = Coin()
+    golden.golden_list = arcade.SpriteList()
+    golden_skeleton = arcade.Sprite("goldenskeleton.png", SPRITE_SCALING * 1.4)
+    golden_skeleton.center_x = (SCREEN_WIDTH - (SPRITE_SIZE - 25))
+    golden_skeleton.bottom = SPRITE_SIZE * 4
+    golden.golden_list.append(golden_skeleton)
+
+    return golden
+
+
 def setup_room_3():
 
     room = Room()
@@ -420,6 +424,17 @@ def enemy_setup_3():
     return enemy
 
 
+def golden_setup3():
+    golden = Coin()
+    golden.golden_list = arcade.SpriteList()
+    golden_skeleton = arcade.Sprite("goldenskeleton.png", SPRITE_SCALING * 1.4)
+    golden_skeleton.center_x = (SCREEN_WIDTH - (SPRITE_SIZE * 3))
+    golden_skeleton.bottom = SPRITE_SIZE * 5
+    golden.golden_list.append(golden_skeleton)
+
+    return golden
+
+
 class GameView(arcade.View):
 
     def __init__(self):
@@ -430,6 +445,7 @@ class GameView(arcade.View):
         self.current_room = 0
         self.room_coins = 0
         self.enemy_room = 0
+        self.golden_room = 0
 
         # Set up the player
         self.player_sprite = None
@@ -440,7 +456,7 @@ class GameView(arcade.View):
         self.rooms = None
         self.coins = None
         self.enemies = None
-        self.golden_coin = None
+        self.golden = None
 
         # Set up logic
         self.physics_engine = None
@@ -460,7 +476,6 @@ class GameView(arcade.View):
         # Set up sounds
         self.good_hit_sound = arcade.sound.load_sound(":resources:sounds/coin1.wav")
 
-
     def setup(self):
 
         self.player_list = arcade.SpriteList()
@@ -476,7 +491,7 @@ class GameView(arcade.View):
         self.rooms = []
         self.coins = []
         self.enemies = []
-        self.golden_coin = []
+        self.golden = []
 
         room = setup_room_1()
         self.rooms.append(room)
@@ -505,10 +520,20 @@ class GameView(arcade.View):
         enemies = enemy_setup_3()
         self.enemies.append(enemies)
 
+        golden = golden_setup1()
+        self.golden.append(golden)
+
+        golden = golden_setup2()
+        self.golden.append(golden)
+
+        golden = golden_setup3()
+        self.golden.append(golden)
+
         # Our starting room number
         self.current_room = 0
         self.room_coins = 0
         self.enemy_room = 0
+        self.golden_room = 0
 
         # Create a physics engine for this room
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -527,13 +552,14 @@ class GameView(arcade.View):
 
         self.coins[self.room_coins].coin_list.draw()
 
-        self.golden_coin.draw()
-
         self.enemies[self.enemy_room].enemy_list.draw()
 
         self.player_list.draw()
 
         self.sword_list.draw()
+
+        if len(self.enemies[self.enemy_room].enemy_list) == 0:
+            self.golden[self.golden_room].golden_list.draw()
 
         output = f"score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 30)
@@ -587,7 +613,7 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
 
-        if self.lives > 0 or self.score < 40:
+        if self.lives > 0 or self.score < 55:
 
             self.time_taken += delta_time
 
@@ -603,6 +629,7 @@ class GameView(arcade.View):
                 self.current_room = 1
                 self.room_coins = 1
                 self.enemy_room = 1
+                self.golden_room = 1
                 self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                      self.rooms[self.current_room].wall_list,
                                                                      gravity_constant=GRAVITY)
@@ -612,6 +639,7 @@ class GameView(arcade.View):
                 self.current_room = 0
                 self.room_coins = 0
                 self.enemy_room = 0
+                self.golden_room = 0
                 self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                      self.rooms[self.current_room].wall_list,
                                                                      gravity_constant=GRAVITY)
@@ -622,6 +650,7 @@ class GameView(arcade.View):
                 self.current_room = 2
                 self.room_coins = 2
                 self.enemy_room = 2
+                self.golden_room = 2
                 self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                      self.rooms[self.current_room].wall_list,
                                                                      gravity_constant=GRAVITY)
@@ -632,6 +661,7 @@ class GameView(arcade.View):
                 self.current_room = 1
                 self.room_coins = 1
                 self.enemy_room = 1
+                self.golden_room = 1
                 self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                                      self.rooms[self.current_room].wall_list,
                                                                      gravity_constant=GRAVITY)
@@ -652,6 +682,15 @@ class GameView(arcade.View):
                 coin.remove_from_sprite_lists()
                 self.score += 1
                 arcade.play_sound(self.good_hit_sound)
+
+            # Coin logic to increase score and eliminating sprite from list
+            if len(self.enemies[self.enemy_room].enemy_list) == 0:
+                good_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                                     self.golden[self.golden_room].golden_list)
+                for golden in good_hit_list:
+                    golden.remove_from_sprite_lists()
+                    self.score += 5
+                    arcade.play_sound(self.good_hit_sound)
 
             # Player lives logic to subtract a live each time sprite touches sprite
             self.dead_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
@@ -686,7 +725,7 @@ class GameView(arcade.View):
                 self.window.set_mouse_visible(True)
                 self.window.show_view(game_over_view)
 
-            if self.score == 40:
+            if self.score == 55:
                 win_view = WinView()
                 win_view.time_taken = self.time_taken
                 self.window.set_mouse_visible(True)
